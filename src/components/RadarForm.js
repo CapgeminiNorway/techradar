@@ -38,10 +38,6 @@ const RadarForm = () => {
   const disabled = !radarForm.id.length;
   const publicName = `${cop}-${year}`;
 
-  useEffect(() => {
-    radarForm.isPublic && setRadarForm({ ...radarForm, id: radarForm.isPublic ? publicName : '' });
-  }, [radarForm, publicName, year, cop]);
-
   const handleChange = (e) => {
     e.preventDefault();
     setRadarForm({ ...radarForm, [e.target.name]: e.target.value });
@@ -79,7 +75,7 @@ const RadarForm = () => {
         <>
           <select name="cop" onChange={(e) => setCop(e.target.value)}>
             {communityNames.map((cop) => {
-              return <option value={'NO-CoP-' + cop.replace(/\s+/g, '-')}>{cop}</option>;
+              return <option key={cop} value={'NO-CoP-' + cop.replace(/\s+/g, '-')}>{cop}</option>;
             })}
           </select>
           <h5>Year</h5>

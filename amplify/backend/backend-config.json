@@ -13,7 +13,24 @@
         "techradarREST": {
             "service": "Lambda",
             "providerPlugin": "awscloudformation",
-            "build": true
+            "build": true,
+            "dependsOn": [
+                {
+                    "category": "auth",
+                    "resourceName": "techradar7713fa94",
+                    "attributes": [
+                        "UserPoolId"
+                    ]
+                },
+                {
+                    "category": "api",
+                    "resourceName": "techradar",
+                    "attributes": [
+                        "GraphQLAPIIdOutput",
+                        "GraphQLAPIEndpointOutput"
+                    ]
+                }
+            ]
         }
     },
     "auth": {

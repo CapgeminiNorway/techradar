@@ -77,5 +77,5 @@ export const useGraphQLSubscription = () => {
       onDeleteRadarSub.unsubscribe();
       onUpdateTechSub.unsubscribe();
     };
-  }, []);
+  }, [dispatch]);
 };

@@ -11,7 +11,7 @@ import WordCloudPage from './components/pages/GenerateWordCloud';
 import { useAlert } from 'react-alert';
 import AuthTheme from './amplifyAuthStyles';
 import NavigationBar from './components/commons/NavigationBar';
-import Modal from './components/commons/Modal';
+import Modal, { MODAL_TYPES } from './components/commons/Modal';
 import { useGraphQLSubscription } from './graphql.hook';
 import { createRadarUrl, setModal } from './redux/actions/gui.action';
 import { handleSetCurrentUser } from './redux/actions/user.action';
@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import About from './components/pages/About';
 import TechForm from './components/TechForm';
 import RadarForm from './components/RadarForm';
+import { API } from 'aws-amplify';
 
 Amplify.configure(aws_exports);
 
@@ -37,6 +38,23 @@ const App = () => {
 
   useGraphQLSubscription(dispatch);
   const alert = useAlert();
+
+  
+// TODO: CORS issue on getting list of users
+async function getusers() {
+  try {
+    const res = await API.get('techradarREST', '/user-admin', {
+      body: {
+        userPoolId: aws_exports.aws_user_pools_id,
+      },
+    });
+    console.log(res);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+getusers();
 
   React.useEffect(() => {
     if (currentRadarList.length) createRadarUrl(currentRadarList);
@@ -59,9 +77,9 @@ const App = () => {
 
   const renderModal = () => {
     switch(ModalComponent) {
-      case "About": return <About />
-      case "TechForm": return <TechForm />
-      case "RadarForm": return <RadarForm />
+      case MODAL_TYPES.ABOUT: return <About />
+      case MODAL_TYPES.TECH_FORM: return <TechForm />
+      case MODAL_TYPES.RADAR_FORM: return <RadarForm />
       default: return null;
     }
   }

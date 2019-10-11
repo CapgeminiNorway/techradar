@@ -2,12 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { useWindowSize } from '../../helper';
 import { withRouter } from 'react-router-dom';
-import TechForm from '../TechForm';
-import RadarForm from '../RadarForm';
-import About from '../pages/About';
 import { useDispatch, useSelector } from 'react-redux';
 import { setModal } from '../../redux/actions/gui.action';
 import { signOut } from '../../redux/actions/user.action';
+import { MODAL_TYPES } from './Modal';
 
 const NavigationBar = withRouter(({ history }) => {
   const windowSize = useWindowSize();
@@ -37,15 +35,15 @@ const Buttons = React.memo(({ history }) => {
   const { currentUser } = useSelector((state) => state.user);
 
   const openAddTechModal = () => {
-    dispatch(setModal("TechForm"));
+    dispatch(setModal(MODAL_TYPES.TECH_FORM));
   };
 
   const openManageRadar = () => {
-    dispatch(setModal("RadarForm"));
+    dispatch(setModal(MODAL_TYPES.RADAR_FORM));
   };
 
   const openAbout = () => {
-    dispatch(setModal("About"));
+    dispatch(setModal(MODAL_TYPES.ABOUT));
   };
 
   const toRadar = () => {

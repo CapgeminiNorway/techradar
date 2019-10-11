@@ -1,4 +1,12 @@
-const express = require('express')
+/* Amplify Params - DO NOT EDIT
+You can access the following resource attributes as environment variables from your Lambda function
+var environment = process.env.ENV
+var region = process.env.REGION
+var authTechradar7713fa94UserPoolId = process.env.AUTH_TECHRADAR7713FA94_USERPOOLID
+var apiTechradarGraphQLAPIIdOutput = process.env.API_TECHRADAR_GRAPHQLAPIIDOUTPUT
+var apiTechradarGraphQLAPIEndpointOutput = process.env.API_TECHRADAR_GRAPHQLAPIENDPOINTOUTPUT
+
+Amplify Params - DO NOT EDIT */const express = require('express')
 const bodyParser = require('body-parser')
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 const excel = require('exceljs');
@@ -6,6 +14,15 @@ const tempfile = require('tempfile');
 const AWS = require('aws-sdk');
 
 AWS.config.update({ region: process.env.TABLE_REGION });
+
+var environment = process.env.ENV
+var authTechradar7713fa94UserPoolId = process.env.AUTH_TECHRADAR7713FA94_USERPOOLID
+var apiTechradarGraphQLAPIIdOutput = process.env.API_TECHRADAR_GRAPHQLAPIIDOUTPUT
+var apiTechradarGraphQLAPIEndpointOutput = process.env.API_TECHRADAR_GRAPHQLAPIENDPOINTOUTPUT
+
+console.log(authTechradar7713fa94UserPoolId);
+console.log(apiTechradarGraphQLAPIIdOutput);
+console.log(apiTechradarGraphQLAPIEndpointOutput);
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
@@ -57,8 +74,6 @@ app.post('/jsonToExcel', function(req, res) {
     console.error(err);
   }
 });
-
-const environment = process.env.ENV;
 
 let radarTableName = "Radar-xh2ogkna6nfoppcihalud3uvgq-" + environment;
 let techTableName = "Tech-xh2ogkna6nfoppcihalud3uvgq-" + environment;
