@@ -1,0 +1,81 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+import { ThemeProvider } from 'styled-components';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import LogRocket from 'logrocket';
+import setupLogRocketReact from 'logrocket-react';
+import { API } from 'aws-amplify';
+import awsmobile from './aws-exports';
+import PublicRadarPage from './components/pages/PublicRadarPage';
+import { transitions, positions, Provider as AlertProvider } from 'react-alert';
+import AlertTemplate from 'react-alert-template-basic';
+import { Provider as ReduxProvider } from 'react-redux';
+import configureStore from './redux/store/index';
+
+// TODO: CORS issue on getting list of users
+async function getusers() {
+  try {
+    const res = await API.get('userAdmin', '/user-admin', {
+      body: {
+        userPoolId: awsmobile.aws_user_pools_id,
+      },
+    });
+    console.log(res);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+getusers();
+
+LogRocket.init('rqj7fr/capgemini-tech-radar');
+setupLogRocketReact(LogRocket);
+
+// optional cofiguration
+const alertBoxConfig = {
+  // you can also just use 'bottom center'
+  position: positions.BOTTOM_RIGHT,
+  timeout: 5000,
+  offset: '30px',
+  // you can also just use 'scale'
+  transition: transitions.SCALE,
+};
+
+export const stylesTheme = {
+  default: {
+    primaryColor: '#0071ae', // 2B0B3D
+    secondaryColor: '#09ACDC',
+    backgroundColor: '#282c34',
+    fontColor: 'black',
+    lightColor: 'white',
+    grayColor: '#ddd',
+    opaqueWhite: 'rgba(255,255,255,0.3)',
+    negativeColor: 'red',
+    secondaryNegativeColor: 'darkred',
+  },
+};
+const reduxStore = configureStore();
+
+ReactDOM.render(
+  <BrowserRouter>
+    <ReduxProvider store={reduxStore}>
+      <ThemeProvider theme={stylesTheme}>
+        <AlertProvider template={AlertTemplate} {...alertBoxConfig}>
+          <Switch>
+            <Route path="/edit/" component={App} />
+            <Route exact path="/:radarId?" component={PublicRadarPage} />
+          </Switch>
+        </AlertProvider>
+      </ThemeProvider>
+    </ReduxProvider>
+  </BrowserRouter>,
+  document.getElementById('root'),
+);
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: http://bit.ly/CRA-PWA
+serviceWorker.register();

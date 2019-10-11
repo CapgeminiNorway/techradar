@@ -1,0 +1,63 @@
+{
+    "paths": [
+        {
+            "name": "/radar",
+            "lambdaFunction": "techradarREST",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            }
+        },
+        {
+            "name": "/jsonToExcel",
+            "lambdaFunction": "techradarREST",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            }
+        },
+        {
+            "name": "/public-radar",
+            "lambdaFunction": "techradarREST",
+            "privacy": {
+                "open": true
+            }
+        }
+    ],
+    "resourceName": "techradarREST",
+    "apiName": "techradarREST",
+    "functionArns": [
+        {
+            "lambdaFunction": "techradarREST"
+        }
+    ],
+    "privacy": {
+        "auth": 2,
+        "unauth": 0,
+        "authRoleName": "techradar-dev-20191009220654-authRole",
+        "unAuthRoleName": "techradar-dev-20191009220654-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "techradarREST",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ],
+    "uuid": "16f44465"
+}

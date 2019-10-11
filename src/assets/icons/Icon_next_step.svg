@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="45px" height="45px" viewBox="0 0 45 45" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.1 (78136) - https://sketchapp.com -->
+    <title>Next step button/White</title>
+    <desc>Created with Sketch.</desc>
+    <style type="text/css">
+        .st2{stroke:#FFF;}
+    </style>
+    <g id="Next-step-button/White" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-5">
+            <rect id="Rectangle-Copy-21" fill="" x="0" y="0" width="45" height="45" rx="22"></rect>
+            <g id="Group-Copy-2" transform="translate(14.000000, 17.000000)" class="st2" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <polyline id="Path" transform="translate(14.000000, 5.000000) rotate(-360.000000) translate(-14.000000, -5.000000) " points="11.5 0 16.5 4.94443723 11.5 10"></polyline>
+                <path d="M15.5,5 L0.244691301,5" id="Line"></path>
+            </g>
+        </g>
+    </g>
+</svg>

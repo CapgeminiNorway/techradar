@@ -1,0 +1,30 @@
+type Tech @model @auth(rules: [
+    { allow: owner },
+    { allow: groups, groups: ["admin"], queries: [get,list], mutations: [create, delete, update] }
+    { allow: groups, groups: ["user"], queries: [get,list] mutations: [create] }
+  ]) {
+  id: ID!
+  name: String!
+  description: String
+  quadrant: String!
+  ring: String!
+  url: String
+  radar: Radar @connection (name: "RadarTech", sortField: "ring")
+  radarId: String
+  confirmed: Boolean
+  owner: String
+  moved: String!
+}
+
+type Radar @model @auth(rules: [
+    { allow: owner },
+    { allow: groups, groups: ["admin"], queries: [get,list], mutations: [create, delete, update] }
+    { allow: groups, groups: ["user"], queries: [get,list] }
+  ]) {
+  id: ID!
+  description: String
+  prevRadarUrl: String
+  isPublic: Boolean
+  owner: String
+  techList: [Tech] @connection (name: "RadarTech", sortField: "ring")
+}

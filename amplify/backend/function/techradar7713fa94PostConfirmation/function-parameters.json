@@ -1,0 +1,14 @@
+{
+    "trigger": true,
+    "modules": [
+        "add-to-group"
+    ],
+    "parentResource": "techradar7713fa94",
+    "functionName": "techradar7713fa94PostConfirmation",
+    "parentStack": "auth",
+    "triggerEnvs": "[]",
+    "triggerTemplate": "PostConfirmation.json.ejs",
+    "roleName": "techradar7713fa94PostConfirmation",
+    "skipEdit": true,
+    "resourceName": "techradar7713fa94PostConfirmation"
+}

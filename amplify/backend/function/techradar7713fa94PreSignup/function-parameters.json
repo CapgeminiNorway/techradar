@@ -1,0 +1,14 @@
+{
+    "trigger": true,
+    "modules": [
+        "email-filter-whitelist"
+    ],
+    "parentResource": "techradar7713fa94",
+    "functionName": "techradar7713fa94PreSignup",
+    "parentStack": "auth",
+    "triggerEnvs": "[]",
+    "triggerTemplate": "PreSignup.json.ejs",
+    "roleName": "techradar7713fa94PreSignup",
+    "skipEdit": true,
+    "resourceName": "techradar7713fa94PreSignup"
+}
