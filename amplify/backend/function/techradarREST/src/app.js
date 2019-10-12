@@ -12,6 +12,7 @@ const awsServerlessExpressMiddleware = require('aws-serverless-express/middlewar
 const excel = require('exceljs');
 const tempfile = require('tempfile');
 const AWS = require('aws-sdk');
+const CognitoIdentityServiceProvider = require('aws-sdk/clients/cognitoidentityserviceprovider');
 
 AWS.config.update({ region: process.env.TABLE_REGION });
 
@@ -75,8 +76,10 @@ app.post('/jsonToExcel', function(req, res) {
   }
 });
 
-let radarTableName = "Radar-xh2ogkna6nfoppcihalud3uvgq-" + environment;
-let techTableName = "Tech-xh2ogkna6nfoppcihalud3uvgq-" + environment;
+const tableHash = environment === "prod" ? "lvlj5t5honcxdaad7i2gnd3h7m-prod" : "xh2ogkna6nfoppcihalud3uvgq-dev"
+
+const radarTableName = `Radar-${tableHash}`;
+const techTableName = `Tech-${tableHash}`;
 
 /********************************
  * HTTP Get method for all Radars where public is true *
@@ -134,6 +137,62 @@ async function getRadarWithTech(radar) {
   return dynamodb.scan(techQueryParams).promise();
 
 }
+
+app.get('/user-admin', function(req, res) {
+  // Add your code here
+  var params = {
+    UserPoolId: authTechradar7713fa94UserPoolId,
+    AttributesToGet: ['email', 'username'],
+  };
+  CognitoIdentityServiceProvider.listUsers(params, (err, data) => {
+    if (err) {
+      console.log(err);
+      res.json({ success: null, error: err, url: req.url });
+    } else {
+      console.log('data', data);
+      res.json({ success: data, error: null, url: req.url });
+    }
+  });
+});
+
+app.get('/user-admin/*', function(req, res) {
+  // Add your code here
+  res.json({ success: 'get call succeed!', url: req.url });
+});
+
+app.delete('/user-admin/admin', function(req, res) {
+  var params = {
+    UserPoolId: authTechradar7713fa94UserPoolId /* required */,
+    Username: req.body.username /* required */,
+  };
+  CognitoIdentityServiceProvider.adminDeleteUser(params, function(err, data) {
+    if (err) {
+      res.json({ success: null, error: err, url: req.url });
+    } else {
+      res.json({ success: data, error: null, url: req.url });
+    }
+  });
+});
+
+app.delete('/user-admin/user', function(req, res) {
+  var params = {
+    UserPoolId: authTechradar7713fa94UserPoolId /* required */,
+    AccessToken: req.header.accessToken,
+  };
+
+  CognitoIdentityServiceProvider.deleteUser(params, function(err, data) {
+    if (err) {
+      res.json({ success: null, error: err, url: req.url });
+    } else {
+      res.json({ success: data, error: null, url: req.url });
+    }
+  });
+});
+
+app.delete('/user-admin/*', function(req, res) {
+  // Add your code here
+  res.json({ success: 'delete call succeed!', url: req.url });
+});
 
 app.listen(3000, function() {
     console.log("App started")

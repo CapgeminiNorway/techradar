@@ -15,7 +15,7 @@ import Modal, { MODAL_TYPES } from './components/commons/Modal';
 import { useGraphQLSubscription } from './graphql.hook';
 import { createRadarUrl, setModal } from './redux/actions/gui.action';
 import { handleSetCurrentUser } from './redux/actions/user.action';
-import { getAllRadars } from './redux/actions/radar.action';
+import { getAllRadars, setCurrentTech } from './redux/actions/radar.action';
 import { useDispatch, useSelector } from 'react-redux';
 import About from './components/pages/About';
 import TechForm from './components/TechForm';
@@ -39,22 +39,19 @@ const App = () => {
   useGraphQLSubscription(dispatch);
   const alert = useAlert();
 
-  
-// TODO: CORS issue on getting list of users
-async function getusers() {
-  try {
-    const res = await API.get('techradarREST', '/user-admin', {
-      body: {
-        userPoolId: aws_exports.aws_user_pools_id,
-      },
-    });
-    console.log(res);
-  } catch (err) {
-    console.error(err);
-  }
-}
+  React.useEffect(() => {
+    async function getUsers() {
+      try {
+        const res = await API.get('techradarREST', '/user-admin');
+        console.log(res);
+      } catch (err) {
+        console.error(err);
+      }
+    }
 
-getusers();
+    getUsers();
+  }, [])
+
 
   React.useEffect(() => {
     if (currentRadarList.length) createRadarUrl(currentRadarList);
@@ -72,6 +69,9 @@ getusers();
   }, [userWarning]);
 
   const handleToggleModal = (Component) => {
+    if (!Component || !Component.length) {
+      dispatch(setCurrentTech(null))
+    }
     dispatch(setModal(Component));
   };
 

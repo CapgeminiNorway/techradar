@@ -13,7 +13,6 @@ import AlertTemplate from 'react-alert-template-basic';
 import { Provider as ReduxProvider } from 'react-redux';
 import configureStore from './redux/store/index';
 
-
 LogRocket.init('rqj7fr/capgemini-tech-radar');
 setupLogRocketReact(LogRocket);
 

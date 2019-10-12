@@ -28,6 +28,9 @@ const PublicRadarPage = ({ history, match }) => {
     try {
       const res = await API.get('techradarREST', '/public-radar');
 
+      if (res.error) {
+        setError(`Network error: ${res.error}`);
+      }
       if (match.params.radarId) {
         for (let i = 0; i < res.length; i++) {
           if (res[i].id === match.params.radarId) return setCurrentRadar(res[i]);
