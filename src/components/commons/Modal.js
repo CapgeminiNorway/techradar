@@ -6,6 +6,14 @@ import { usePortal } from '../../helper';
 import Icon, { ICON_TYPES } from '../../assets/icons/IconComponent';
 import styled from 'styled-components';
 
+
+export const MODAL_TYPES = {
+  TECH_FORM: "TECH_FORM",
+  RADAR_FORM: "RADAR_FORM",
+  ABOUT: "ABOUT",
+
+}
+
 const Modal = ({
   size,
   title,

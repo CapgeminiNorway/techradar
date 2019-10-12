@@ -1,1 +1,17 @@
-{}
+{
+    "permissions": {
+        "auth": {
+            "techradar7713fa94": [
+                "create",
+                "read",
+                "update",
+                "delete"
+            ]
+        },
+        "api": {
+            "techradar": [
+                "read"
+            ]
+        }
+    }
+}

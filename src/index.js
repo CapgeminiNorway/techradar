@@ -7,29 +7,11 @@ import { ThemeProvider } from 'styled-components';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import LogRocket from 'logrocket';
 import setupLogRocketReact from 'logrocket-react';
-import { API } from 'aws-amplify';
-import awsmobile from './aws-exports';
 import PublicRadarPage from './components/pages/PublicRadarPage';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
 import { Provider as ReduxProvider } from 'react-redux';
 import configureStore from './redux/store/index';
-
-// TODO: CORS issue on getting list of users
-async function getusers() {
-  try {
-    const res = await API.get('userAdmin', '/user-admin', {
-      body: {
-        userPoolId: awsmobile.aws_user_pools_id,
-      },
-    });
-    console.log(res);
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-getusers();
 
 LogRocket.init('rqj7fr/capgemini-tech-radar');
 setupLogRocketReact(LogRocket);

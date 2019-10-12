@@ -4,19 +4,19 @@ import { QUADRANTS } from '../App';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteTech, updateTech, addTech } from '../redux/actions/radar.action';
 
-const TechForm = ({ existingData, deleteButton }) => {
+const TechForm = () => {
   const dispatch = useDispatch();
-  const { currentRadarList } = useSelector((state) => state.radar);
+  const { currentRadarList, currentTech } = useSelector((state) => state.radar);
   const { isAdmin } = useSelector((state) => state.user.currentUser);
 
-  const _deleteButton = deleteButton || dispatch(deleteTech);
+  const deleteCurrentTech = () => dispatch(() => deleteTech(currentTech));
 
   const [techForm, setTechForm] = React.useState({
-    id: existingData ? existingData.id : null,
+    id: currentTech ? currentTech.id : null,
     confirmed: false,
-    name: existingData ? existingData.name : '',
-    url: existingData ? existingData.url : '',
-    description: existingData ? existingData.description : '',
+    name: currentTech ? currentTech.name : '',
+    url: currentTech ? currentTech.url : '',
+    description: currentTech ? currentTech.description : '',
     quadrant: 'techniques',
     ring: 'adopt',
     moved: 'same',
@@ -31,12 +31,12 @@ const TechForm = ({ existingData, deleteButton }) => {
   }, [toggleEnableSubmit, techForm]);
 
   React.useEffect(() => {
-    if (existingData) {
-      delete existingData.radar;
-      delete existingData.__typename;
-      setTechForm(existingData);
+    if (currentTech) {
+      delete currentTech.radar;
+      delete currentTech.__typename;
+      setTechForm(currentTech);
     }
-  }, [existingData]);
+  }, [currentTech]);
 
   const handleChange = (e) => {
     setTechForm({ ...techForm, [e.target.name]: e.target.value });
@@ -51,7 +51,7 @@ const TechForm = ({ existingData, deleteButton }) => {
 
     if (
       (currentRadarList && !currentRadarList.length) ||
-      (existingData && existingData.techRadarId)
+      (currentTech && currentTech.techRadarId)
     ) {
       return alert('Before submitting a technology, specify a Radar to submit to.');
     }
@@ -65,7 +65,7 @@ const TechForm = ({ existingData, deleteButton }) => {
       radarId: radarId,
     };
 
-    if (existingData) {
+    if (currentTech) {
       dispatch(updateTech(currentTechForm));
     } else {
       dispatch(addTech(currentTechForm));
@@ -75,12 +75,12 @@ const TechForm = ({ existingData, deleteButton }) => {
   return (
     <AddTechForm onSubmit={(e) => handleSubmit(e)}>
       <h1>
-        {existingData ? 'Update Technology' : `Add Technology ${!isAdmin ? 'for review' : ''}`}
+        {currentTech ? 'Update Technology' : `Add Technology ${!isAdmin ? 'for review' : ''}`}
       </h1>
       <TechFormInput xstart={1} xend={5} yStart={1} yEnd={1}>
         <input
           required
-          disabled={existingData}
+          disabled={currentTech}
           type="text"
           placeholder="name *"
           style={{ fontWeight: 700 }}
@@ -220,8 +220,8 @@ const TechForm = ({ existingData, deleteButton }) => {
       </TechFormInput>
 
       <TechFormInput xstart={1} xend={5} yStart={4} yEnd={4}>
-        {existingData ? (
-          <h5>Radar: {existingData.radarId}</h5>
+        {currentTech ? (
+          <h5>Radar: {currentTech.radarId}</h5>
         ) : !!currentRadarList.length ? (
           <>
             <h5>Select Radar</h5>
@@ -242,13 +242,13 @@ const TechForm = ({ existingData, deleteButton }) => {
       </TechFormInput>
 
       <TechFormInput xstart={5} xend={9} yStart={4} yEnd={4}>
-        {isAdmin && existingData && existingData.id && (
-          <RemoveButton onClick={() => _deleteButton(existingData)} type="button">
-            Remove
+        {isAdmin && currentTech && currentTech.id && (
+          <RemoveButton onClick={deleteCurrentTech} type="button">
+            Delete
           </RemoveButton>
         )}
         <SubmitButton _disabled={!enableSubmit} type="submit">
-          {existingData ? 'Update' : 'Submit'}
+          {currentTech ? 'Update' : 'Submit'}
         </SubmitButton>
       </TechFormInput>
     </AddTechForm>

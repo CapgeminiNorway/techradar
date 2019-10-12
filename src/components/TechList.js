@@ -4,12 +4,12 @@ import { QUADRANTS } from '../App';
 import { getQuadrant, dynamicSortMultiple } from '../function.helper';
 import { useDebounce } from 'use-debounce';
 import { stylesTheme } from '../index';
-import TechForm from './TechForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentTech, toggleRadar, deleteRadar } from '../redux/actions/radar.action';
 import { getConfirmedTech, getUnconfirmedTech } from '../redux/selectors/radar.selector';
 import { setModal } from '../redux/actions/gui.action';
 import Icon, { ICON_TYPES } from '../assets/icons/IconComponent';
+import { MODAL_TYPES } from './commons/Modal';
 
 function TechList({ handleClick, multiList }) {
   const dispatch = useDispatch();
@@ -104,7 +104,8 @@ const SortBar = ({ list, handleClick, multiList }) => {
     if (handleClick) {
       handleClick(_tech);
     } else {
-      dispatch(setModal(<TechForm key={_tech.id} existingData={_tech} />));
+      dispatch(setCurrentTech(_tech))
+      dispatch(setModal(MODAL_TYPES.TECH_FORM));
     }
   };
 
