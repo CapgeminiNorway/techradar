@@ -112,8 +112,8 @@ export const IconContainer = styled.div`
     props.absoluteRight &&
     `
         position: absolute;
-        right: 50px;
-        top: 40px;
+        right: 30px;
+        top: 35px;
     `};
   ${(props) =>
     props.absoluteLeft &&

@@ -1,8 +1,8 @@
-/* eslint-disable */
+// eslint-disable
 // this is an auto generated file. This will be overwritten
 
-export const onCreateTech = `subscription OnCreateTech($owner: String) {
-  onCreateTech(owner: $owner) {
+export const onCreateTech = `subscription OnCreateTech {
+  onCreateTech {
     id
     name
     description
@@ -26,8 +26,8 @@ export const onCreateTech = `subscription OnCreateTech($owner: String) {
   }
 }
 `;
-export const onUpdateTech = `subscription OnUpdateTech($owner: String) {
-  onUpdateTech(owner: $owner) {
+export const onUpdateTech = `subscription OnUpdateTech {
+  onUpdateTech {
     id
     name
     description
@@ -51,8 +51,8 @@ export const onUpdateTech = `subscription OnUpdateTech($owner: String) {
   }
 }
 `;
-export const onDeleteTech = `subscription OnDeleteTech($owner: String) {
-  onDeleteTech(owner: $owner) {
+export const onDeleteTech = `subscription OnDeleteTech {
+  onDeleteTech {
     id
     name
     description
@@ -76,8 +76,8 @@ export const onDeleteTech = `subscription OnDeleteTech($owner: String) {
   }
 }
 `;
-export const onCreateRadar = `subscription OnCreateRadar($owner: String) {
-  onCreateRadar(owner: $owner) {
+export const onCreateRadar = `subscription OnCreateRadar {
+  onCreateRadar {
     id
     description
     prevRadarUrl
@@ -101,8 +101,8 @@ export const onCreateRadar = `subscription OnCreateRadar($owner: String) {
   }
 }
 `;
-export const onUpdateRadar = `subscription OnUpdateRadar($owner: String) {
-  onUpdateRadar(owner: $owner) {
+export const onUpdateRadar = `subscription OnUpdateRadar {
+  onUpdateRadar {
     id
     description
     prevRadarUrl
@@ -126,8 +126,8 @@ export const onUpdateRadar = `subscription OnUpdateRadar($owner: String) {
   }
 }
 `;
-export const onDeleteRadar = `subscription OnDeleteRadar($owner: String) {
-  onDeleteRadar(owner: $owner) {
+export const onDeleteRadar = `subscription OnDeleteRadar {
+  onDeleteRadar {
     id
     description
     prevRadarUrl

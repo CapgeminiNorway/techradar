@@ -14,7 +14,7 @@ const WordCloudPage = () => {
   const { width, height } = useWindowSize();
 
   const [wordCloudList, setWordCloudList] = React.useState([]);
-  const radarRef = React.useRef();
+  const cloudRef = React.useRef();
 
   const handlePickTech = (tech) => {
     if (wordCloudList.indexOf(tech) !== -1) {
@@ -30,13 +30,13 @@ const WordCloudPage = () => {
   }, [wordCloudList]);
 
   const regenerateCloud = React.useCallback(() => {
-    const radarParent = radarRef.current;
+    const radarParent = cloudRef.current;
 
     while (radarParent && radarParent.firstChild) {
       radarParent.firstChild && radarParent.removeChild(radarParent.firstChild);
     }
     layout(getWordCloudName, width / 1.5, height / 1.5).start();
-  }, [getWordCloudName, radarRef, width, height]);
+  }, [getWordCloudName, cloudRef, width, height]);
 
   React.useEffect(() => {
     regenerateCloud();
@@ -71,7 +71,7 @@ const WordCloudPage = () => {
                 Download
               </WhiteButton>
             </ButtonBar>
-            <StyledSvg key="svg" ref={radarRef} id="word_cloud" />
+            <StyledSvg key="svg" ref={cloudRef} id="word_cloud" />
           </StyledAnimateCurrentTech>
         </PoseGroup>
       </CenterContainerCol>
@@ -83,13 +83,12 @@ export default React.memo(WordCloudPage);
 
 const ManageRadarWrapper = styled.div`
   height: 100%;
-  width: 100%;
+  width: 100vw;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
 
   @media (max-width: 768px) {
-    height: unset;
     flex-direction: column-reverse;
   }
 `;
@@ -120,5 +119,6 @@ const StyledSvg = styled.svg`
   @media (max-width: 768px) {
     min-width: 100%;
     max-width: 100%;
+    max-height: 50vh;
   }
 `;

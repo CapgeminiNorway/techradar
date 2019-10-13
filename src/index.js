@@ -19,9 +19,9 @@ setupLogRocketReact(LogRocket);
 // optional cofiguration
 const alertBoxConfig = {
   // you can also just use 'bottom center'
-  position: positions.BOTTOM_RIGHT,
+  position: positions.BOTTOM_CENTER,
   timeout: 5000,
-  offset: '30px',
+  offset: '100px',
   // you can also just use 'scale'
   transition: transitions.SCALE,
 };

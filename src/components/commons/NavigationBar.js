@@ -78,7 +78,8 @@ export const NavIcon = styled.div`
 
 const MobileNavButton = styled.nav`
   width: 100vw;
-  height: 50px;
+  min-height: 80px;
+  max-height: 80px;
   bottom: 0;
   z-index: 1000;
   position: fixed;
@@ -100,6 +101,7 @@ export const StyledNavBar = styled.nav`
   padding: 0.5em;
   justify-content: space-between;
   align-items: center;
+  height: 5vh;
 
   a,
   select,

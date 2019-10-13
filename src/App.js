@@ -13,14 +13,18 @@ import AuthTheme from './amplifyAuthStyles';
 import NavigationBar from './components/commons/NavigationBar';
 import Modal, { MODAL_TYPES } from './components/commons/Modal';
 import { useGraphQLSubscription } from './graphql.hook';
-import { createRadarUrl, setModal } from './redux/actions/gui.action';
+import { setModal } from './redux/actions/gui.action';
 import { handleSetCurrentUser } from './redux/actions/user.action';
 import { getAllRadars, setCurrentTech } from './redux/actions/radar.action';
 import { useDispatch, useSelector } from 'react-redux';
 import About from './components/pages/About';
 import TechForm from './components/TechForm';
 import RadarForm from './components/RadarForm';
-import { API } from 'aws-amplify';
+import { API} from 'aws-amplify';
+import { useHash } from './custom-hooks';
+
+Amplify.Logger.LOG_LEVEL = "DEBUG";
+
 
 Amplify.configure(aws_exports);
 
@@ -35,6 +39,10 @@ const App = () => {
   const dispatch = useDispatch();
   const { currentRadarList } = useSelector((state) => state.radar);
   const { userWarning, ModalComponent } = useSelector((state) => state.gui);
+
+  const [storedValue, setValue] = useHash();
+  console.log(storedValue);
+
 
   useGraphQLSubscription(dispatch);
   const alert = useAlert();
@@ -52,10 +60,14 @@ const App = () => {
     getUsers();
   }, [])
 
-
   React.useEffect(() => {
-    if (currentRadarList.length) createRadarUrl(currentRadarList);
-  }, [currentRadarList]);
+    const radarIdList = currentRadarList.map((radar) => {
+      return radar.id;
+    });
+    if (radarIdList.length) {
+      setValue(`radar=${JSON.stringify(radarIdList)}`);
+    }
+  }, [currentRadarList, setValue]);
 
   React.useEffect(() => {
     dispatch(handleSetCurrentUser());
@@ -69,9 +81,6 @@ const App = () => {
   }, [userWarning]);
 
   const handleToggleModal = (Component) => {
-    if (!Component || !Component.length) {
-      dispatch(setCurrentTech(null))
-    }
     dispatch(setModal(Component));
   };
 
@@ -90,9 +99,11 @@ const App = () => {
       </Modal>
       <NavigationBar />
 
+<ContentWrapper>
       <Route exact path="/edit" component={RadarPage} />
       <Route path="/edit/word-cloud" component={WordCloudPage} />
       <Route path="/edit/about" component={AboutPage} />
+      </ContentWrapper>
     </AppMainStyles>
   );
 };
@@ -102,6 +113,9 @@ export default withAuthenticator(App, false, [], null, AuthTheme, {
   hiddenDefaults: ['phone_number'],
 });
 
+const ContentWrapper = styled.div`
+  height: 95vh;
+`;
 const AppMainStyles = styled.div`
   background-color: ${(props) => props.theme.default.backgroundColor};
   min-height: 100vh;
@@ -111,4 +125,29 @@ const AppMainStyles = styled.div`
   align-items: center;
   justify-content: flex-start;
   width: 100vw;
+
+  * {
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+      background: ${(props) => props.theme.default.lightColor + `aa`};
+      padding-top: 40px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      height: 30px;
+      width: 8px;
+      border: 1px solid white;
+      background: ${(props) => props.theme.default.lightColor};
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: ${(props) => props.theme.default.secondaryColor};
+    }
+
+    ::-webkit-scrollbar-track-piece {
+      height: 30px;
+      width: 30px;
+    }
+  }
 `;

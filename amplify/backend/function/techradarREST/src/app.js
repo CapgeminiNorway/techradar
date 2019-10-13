@@ -12,7 +12,8 @@ const awsServerlessExpressMiddleware = require('aws-serverless-express/middlewar
 const excel = require('exceljs');
 const tempfile = require('tempfile');
 const AWS = require('aws-sdk');
-const CognitoIdentityServiceProvider = require('aws-sdk/clients/cognitoidentityserviceprovider');
+
+const CognitoIdentityServiceProvider = AWS.CognitoIdentityServiceProvider;
 
 AWS.config.update({ region: process.env.TABLE_REGION });
 

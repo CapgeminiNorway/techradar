@@ -7,9 +7,10 @@ import { deleteTech, updateTech, addTech } from '../redux/actions/radar.action';
 const TechForm = () => {
   const dispatch = useDispatch();
   const { currentRadarList, currentTech } = useSelector((state) => state.radar);
-  const { isAdmin } = useSelector((state) => state.user.currentUser);
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const isAdmin = currentUser && currentUser.isAdmin; 
 
-  const deleteCurrentTech = () => dispatch(() => deleteTech(currentTech));
+  const deleteCurrentTech = () => dispatch(deleteTech(currentTech));
 
   const [techForm, setTechForm] = React.useState({
     id: currentTech ? currentTech.id : null,
@@ -80,7 +81,6 @@ const TechForm = () => {
       <TechFormInput xstart={1} xend={5} yStart={1} yEnd={1}>
         <input
           required
-          disabled={currentTech}
           type="text"
           placeholder="name *"
           style={{ fontWeight: 700 }}
@@ -110,7 +110,7 @@ const TechForm = () => {
       </TechFormInput>
 
       <TechFormInput xstart={5} xend={9} yStart={2} yEnd={2}>
-        <h5>Changes</h5>
+        <h5>Changes since last radar</h5>
         <ButtonSelector>
           <button
             onClick={(e) => handleButtonClick(e, 'moved')}
@@ -255,13 +255,17 @@ const TechForm = () => {
   );
 };
 
-export default TechForm;
+export default React.memo(TechForm);
 
 const AddTechForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
+
+  h5 {
+    margin: 10px 0;
+  }
 
   @media (max-width: 768px) {
     min-width: unset;

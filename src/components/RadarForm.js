@@ -159,6 +159,7 @@ const StyledRadarForm = styled.form`
   display: flex;
   flex-direction: column;
 
+
   input,
   select {
     padding: 12px;

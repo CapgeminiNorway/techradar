@@ -9,18 +9,27 @@ import { withRouter } from 'react-router-dom';
 import { downloadSVG } from '../helper';
 import { WhiteButton } from './pages/GenerateWordCloud';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCurrentTech } from '../redux/actions/radar.action';
-import { toggleUserWarning } from '../redux/actions/gui.action';
+import { toggleUserWarning, setModal } from '../redux/actions/gui.action';
 import { StyledAnimateCurrentTech } from './commons/styles';
 import { PoseGroup } from 'react-pose';
+import TechForm from './TechForm';
+import { useWindowSize } from '../custom-hooks';
+import { MODAL_TYPES } from './commons/Modal';
+import { setCurrentTech } from '../redux/actions/radar.action';
 
 function Radar({ publicPage, techList, history }) {
   const { currentRadarList } = useSelector((state) => state.radar);
   const dispatch = useDispatch();
 
+  const { height, width } = useWindowSize();
+  const mobileAgent = window.navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/);
+  const isMobile = React.useMemo(() => {
+    return width < 768 || mobileAgent;
+  }, [width, mobileAgent]);
+
   const radarRef = useRef();
   const radarWidth = 1450;
-  const radarHeight = 1000;
+  const radarHeight = 980;
 
   useEffect(() => {
     d3.select(window).on('resize', function() {
@@ -42,10 +51,23 @@ function Radar({ publicPage, techList, history }) {
 
   const handleBubbleClick = React.useCallback(
     (bubble) => {
-      history.push('/manage-tech');
-      dispatch(setCurrentTech(bubble));
+      dispatch(setCurrentTech({
+        "id": bubble.dbId,
+        "name": bubble.name,
+        "description": bubble.description,
+        "url": bubble.url,
+        "radarId": bubble.radarId,
+        "confirmed": bubble.confirmed,
+        "owner": bubble.owner,
+        quadrant: bubble.quadrantString,
+        ring: bubble.ringString,
+        moved: bubble.movedString,
+
+
+      }));
+      dispatch(setModal(MODAL_TYPES.TECH_FORM));
     },
-    [history, dispatch],
+    [dispatch],
   );
 
   const updateRadar = React.useCallback(() => {
@@ -53,11 +75,13 @@ function Radar({ publicPage, techList, history }) {
       return {
         ...tech,
         label: tech.name,
+        dbId: tech.id,
         quadrant: getQuadrant(tech.quadrant),
         quadrantString: tech.quadrant,
         ring: getRing(tech.ring),
         ringString: tech.ring,
         moved: getMovedStatus(tech.moved),
+        movedString: tech.moved,
       };
     });
 
@@ -65,6 +89,7 @@ function Radar({ publicPage, techList, history }) {
       svg_id: 'radar',
       width: radarWidth,
       height: radarHeight,
+      isMobile: !!isMobile,
       textColor: stylesTheme.default.lightColor,
       ringText: 'rgba(255,255,255,0.5)',
       colors: {
@@ -81,7 +106,7 @@ function Radar({ publicPage, techList, history }) {
       handleBubbleClick: handleBubbleClick,
     });
     setSize();
-  }, [techList, handleBubbleClick]);
+  }, [techList, handleBubbleClick, isMobile]);
 
   useEffect(() => {
     const radarParent = radarRef.current;
@@ -120,8 +145,12 @@ function Radar({ publicPage, techList, history }) {
                   The radar is a result of which radars you have selected to the left list. When you
                   are satisfied with the result, you can download SVG or Excel here.
                 </p>
-                <WhiteButton onClick={downloadRadarSvg}>Download Radar SVG</WhiteButton>
-                <WhiteButton onClick={downloadCSV}>Download Excel (.csv)</WhiteButton>
+                {!isMobile && (
+                  <>
+                    <WhiteButton onClick={downloadRadarSvg}>Download Radar SVG</WhiteButton>
+                    <WhiteButton onClick={downloadCSV}>Download Excel (.csv)</WhiteButton>
+                  </>
+                )}
               </TextWrapper>
             )}
 
@@ -148,4 +177,8 @@ const TextWrapper = styled.div`
 
 const TechRadarWrapper = styled.div`
   width: ${(props) => (props.publicPage ? '100vw' : '80vw')};
+
+  svg .radar-text-line {
+    padding: 4px;
+  }
 `;
