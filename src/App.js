@@ -30,7 +30,7 @@ export const QUADRANTS = [
   { name: 'Platforms', color: '#F4B400' },
   { name: 'Languages', color: '#0F9D58' },
 ];
-
+ 
 const App = () => {
   const dispatch = useDispatch();
   const { currentRadarList } = useSelector((state) => state.radar);
