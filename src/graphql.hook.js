@@ -8,7 +8,7 @@ import { SET_IS_LOADING } from './redux/types/gui.type';
 export const useGraphQLSubscription = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    const onCreateTechSub = API.graphql(graphqlOperation(s.onCreateTech)).subscribe({
+    API.graphql(graphqlOperation(s.onCreateTech)).subscribe({
       next: (data) => {
         console.log(data);
         const {
@@ -71,7 +71,6 @@ export const useGraphQLSubscription = () => {
     });
 
     return () => {
-      onCreateTechSub.unsubscribe();
       onDeleteTechSub.unsubscribe();
       onCreateRadarSub.unsubscribe();
       onDeleteRadarSub.unsubscribe();
