@@ -78,6 +78,7 @@ const TechForm = () => {
       <h1>
         {currentTech ? 'Update Technology' : `Add Technology ${!isAdmin ? 'for review' : ''}`}
       </h1>
+      <h5>Technology name *</h5>
       <TechFormInput xstart={1} xend={5} yStart={1} yEnd={1}>
         <input
           required
@@ -90,6 +91,7 @@ const TechForm = () => {
         />
       </TechFormInput>
 
+      <h5>URL</h5>
       <TechFormInput xstart={5} xend={9} yStart={1} yEnd={1}>
         <input
           type="url"
@@ -99,6 +101,8 @@ const TechForm = () => {
           onChange={(e) => handleChange(e)}
         />
       </TechFormInput>
+
+      <h5>Description</h5>
 
       <TechFormInput xstart={1} xend={5} yStart={2} yEnd={2}>
         <textarea
@@ -317,9 +321,17 @@ const TechFormInput = styled.div`
   input,
   textarea {
     width: 100%;
-    padding: 12px 6px;
-    margin: 2px 0;
     border: 1px solid ${(props) => props.theme.default.lightColor};
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid white;
+    color: white;
+    padding: 10px 0;
+    margin: 10px;
+
+    ::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
   }
 
   b {
@@ -330,12 +342,12 @@ const TechFormInput = styled.div`
     input,
     button,
     textarea {
-      padding: 10px;
+      padding: 10px 0;
       min-height: 20px;
       margin: 5px;
     }
     select {
-      padding: 10px;
+      padding: 10px 0;
       min-height: 20px;
       margin: 5px;
     }
