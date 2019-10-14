@@ -214,11 +214,13 @@ app.get('/user-admin', async function (req, res) {
   // Add your code here
 
   try {
-    console.log("canPerformAction")
     await canPerformAction(req.apiGateway.event, 'admin');
+    console.log("canPerformAction")
     const userWithGroupData = await getAllUsers();
-    console.log(userWithGroupData)
-    res.json(userWithGroupData);
+    Promise.all(userWithGroupData).then( res => {
+      console.log("res: ", res);
+      res.json(res);
+    })
   } catch (err) {
     return { error: err }
   }
