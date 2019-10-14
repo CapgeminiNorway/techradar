@@ -249,7 +249,7 @@ app.get('/user-admin', async function (req, res) {
 //   }
 // });
 
-app.post('/user-admin/set-admin', async function (req, res) {
+app.post('/set-admin', async function (req, res) {
 
   await canPerformAction(req.apiGateway.event, 'admin');
   console.log("canPerformAction")

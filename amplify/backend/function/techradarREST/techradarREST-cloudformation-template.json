@@ -84,7 +84,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "techradar-prod-20191011204142-deployment",
-					"S3Key": "amplify-builds/techradarREST-556a375241363948394a-build.zip"
+					"S3Key": "amplify-builds/techradarREST-63426757647869486662-build.zip"
 				}
 			}
 		},

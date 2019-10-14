@@ -48,6 +48,20 @@
                     "/DELETE"
                 ]
             }
+        },
+        {
+            "name": "/set-admin",
+            "lambdaFunction": "techradarREST",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            }
         }
     ],
     "resourceName": "techradarREST",
@@ -58,7 +72,7 @@
         }
     ],
     "privacy": {
-        "auth": 3,
+        "auth": 5,
         "unauth": 0,
         "authRoleName": "techradar-prod-20191011204142-authRole",
         "unAuthRoleName": "techradar-prod-20191011204142-unauthRole"
@@ -73,5 +87,5 @@
             ]
         }
     ],
-    "uuid": "fd9442ae"
+    "uuid": "fb8b903a"
 }
