@@ -7,8 +7,5 @@
             "authtechradar7713fa94",
             "Outputs.UserPoolId"
         ]
-    },
-    "Parameters": {
-        "CreateAPIKey": "true"
     }
 }

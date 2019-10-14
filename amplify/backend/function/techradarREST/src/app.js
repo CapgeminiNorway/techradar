@@ -6,21 +6,21 @@ var authTechradar7713fa94UserPoolId = process.env.AUTH_TECHRADAR7713FA94_USERPOO
 var apiTechradarGraphQLAPIIdOutput = process.env.API_TECHRADAR_GRAPHQLAPIIDOUTPUT
 var apiTechradarGraphQLAPIEndpointOutput = process.env.API_TECHRADAR_GRAPHQLAPIENDPOINTOUTPUT
 
-Amplify Params - DO NOT EDIT */const express = require('express')
+Amplify Params - DO NOT EDIT */
+
+const express = require('express')
 const bodyParser = require('body-parser')
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 const excel = require('exceljs');
 const tempfile = require('tempfile');
 const AWS = require('aws-sdk');
 
-const CognitoIdentityServiceProvider = AWS.CognitoIdentityServiceProvider;
+const CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({apiVersion: '2016-04-19', region: process.env.REGION});
 
-AWS.config.update({ region: process.env.TABLE_REGION });
-
-var environment = process.env.ENV
-var authTechradar7713fa94UserPoolId = process.env.AUTH_TECHRADAR7713FA94_USERPOOLID
-var apiTechradarGraphQLAPIIdOutput = process.env.API_TECHRADAR_GRAPHQLAPIIDOUTPUT
-var apiTechradarGraphQLAPIEndpointOutput = process.env.API_TECHRADAR_GRAPHQLAPIENDPOINTOUTPUT
+const environment = process.env.ENV
+const authTechradar7713fa94UserPoolId = process.env.AUTH_TECHRADAR7713FA94_USERPOOLID
+const apiTechradarGraphQLAPIIdOutput = process.env.API_TECHRADAR_GRAPHQLAPIIDOUTPUT
+const apiTechradarGraphQLAPIEndpointOutput = process.env.API_TECHRADAR_GRAPHQLAPIENDPOINTOUTPUT
 
 console.log(authTechradar7713fa94UserPoolId);
 console.log(apiTechradarGraphQLAPIIdOutput);
@@ -142,26 +142,37 @@ async function getRadarWithTech(radar) {
 app.get('/user-admin', function(req, res) {
   // Add your code here
   var params = {
-    UserPoolId: authTechradar7713fa94UserPoolId,
-    AttributesToGet: ['email', 'username'],
+    UserPoolId: authTechradar7713fa94UserPoolId
   };
   CognitoIdentityServiceProvider.listUsers(params, (err, data) => {
+
+
     if (err) {
       console.log(err);
       res.json({ success: null, error: err, url: req.url });
     } else {
+      let userWithGroup = []
+      
+      for (let i = 0; i < data.Users.length; i++) {
+        const userParams = {
+          ...params,
+          Username: data.Users.Username
+        }
+        CognitoIdentityServiceProvider.adminListGroupsForUser(userParams, function(_err, _data) {
+          userWithGroup.push({
+            ...data.Users,
+            _data
+          })
+        })
+     };
+    
       console.log('data', data);
-      res.json({ success: data, error: null, url: req.url });
+      res.json({ success: userWithGroup, error: null, url: req.url });
     }
   });
 });
 
-app.get('/user-admin/*', function(req, res) {
-  // Add your code here
-  res.json({ success: 'get call succeed!', url: req.url });
-});
-
-app.delete('/user-admin/admin', function(req, res) {
+app.delete('/user-admin/delete', function(req, res) {
   var params = {
     UserPoolId: authTechradar7713fa94UserPoolId /* required */,
     Username: req.body.username /* required */,
@@ -175,20 +186,27 @@ app.delete('/user-admin/admin', function(req, res) {
   });
 });
 
-app.delete('/user-admin/user', function(req, res) {
+app.post('/user-admin/update', function(req, res) {
   var params = {
+    UserAttributes: [
+      {
+        Name: req.body.UserAttribute, //'YOUR_USER_ATTRIBUTE_NAME',
+        Value: 'YOUR_USER_ATTRIBUTE_VALUE'
+      }
+    ],
     UserPoolId: authTechradar7713fa94UserPoolId /* required */,
-    AccessToken: req.header.accessToken,
+    Username: req.body.username /* required */,
   };
-
-  CognitoIdentityServiceProvider.deleteUser(params, function(err, data) {
-    if (err) {
-      res.json({ success: null, error: err, url: req.url });
-    } else {
-      res.json({ success: data, error: null, url: req.url });
-    }
-  });
+  
+  CognitoIdentityServiceProvider.adminUpdateUserAttributes(params, function(err, data) {
+      if (err) {
+        res.json({ success: null, error: err, url: req.url });
+      } else {
+        res.json({ success: data, error: null, url: req.url });
+      }
+    });
 });
+  
 
 app.delete('/user-admin/*', function(req, res) {
   // Add your code here
