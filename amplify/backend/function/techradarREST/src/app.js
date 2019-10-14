@@ -15,7 +15,7 @@ const excel = require('exceljs');
 const tempfile = require('tempfile');
 const AWS = require('aws-sdk');
 
-const CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({ apiVersion: '2016-04-19', region: process.env.REGION });
+const cognito = new AWS.CognitoIdentityServiceProvider({ apiVersion: '2016-04-19', region: process.env.REGION });
 
 const environment = process.env.ENV
 const authTechradar7713fa94UserPoolId = process.env.AUTH_TECHRADAR7713FA94_USERPOOLID
@@ -139,51 +139,111 @@ async function getRadarWithTech(radar) {
 
 }
 
-app.get('/user-admin', function (req, res) {
-  // Add your code here
-  var params = {
+async function getGroupsForUser(event) {
+  // first gets the user attributes from the sub of the user invoking the event
+  let userSub = event.requestContext.identity.cognitoAuthenticationProvider.split(':CognitoSignIn:')[1]
+  let userParams = {
+    UserPoolId: authTechradar7713fa94UserPoolId,
+    Filter: `sub = "${userSub}"`,
+  }
+  let userData = await cognito.listUsers(userParams).promise()
+  const user = userData.Users[0]
+  // next gets the groups for the user invoking the event
+  var groupParams = {
+    UserPoolId: authTechradar7713fa94UserPoolId,
+    Username: user.Username
+  }
+  const groupData = await cognito.adminListGroupsForUser(groupParams).promise()
+  // returns the group data
+  return groupData
+}
+
+async function getUserWithGroupData(user) {
+  // gets the groups for the user
+  var groupParams = {
+    UserPoolId: authTechradar7713fa94UserPoolId,
+    Username: user.Username
+  }
+  const groupData = await cognito.adminListGroupsForUser(groupParams).promise()
+  // returns the group data
+  return { ...user, ...groupData }
+}
+
+async function canPerformAction(event, group) {
+  return new Promise(async (resolve, reject) => {
+    if (!event.requestContext.identity.cognitoAuthenticationProvider) {
+      return reject('not authorized to perform this action')
+    }
+    const groupData = await getGroupsForUser(event)
+    const groupsForUser = groupData.Groups.map(group => group.GroupName)
+    if (groupsForUser.includes(group)) {
+      console.log("includes user in group");
+      resolve()
+    } else {
+      reject('user not in group, cannot perform action..')
+    }
+  })
+}
+
+async function getAllUsers() {
+  const params = {
     UserPoolId: authTechradar7713fa94UserPoolId
   };
-  CognitoIdentityServiceProvider.listUsers(params, (err, data) => {
 
-    if (err) {
-      console.log(err);
-      res.json({ success: null, error: err, url: req.url });
-    } else {
-      let userWithGroup = []
+  return new Promise(async (resolve, reject) => {
 
-      for (let i = 0; i < data.Users.length; i++) {
-        const userParams = {
-          UserPoolId: authTechradar7713fa94UserPoolId,
-          Username: data.Users[i].Username
-        }
-        CognitoIdentityServiceProvider.adminListGroupsForUser(userParams, function (_err, _data) {
-          console.log("adminGetGroup: " + _data);
-          userWithGroup.push({
-            ...data.Users,
-            _data
-          })
+    cognito.listUsers(params, (err, data) => {
+
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        const allUsersWithGroupData = data.Users.map(async user => {
+          return await getUserWithGroupData(user)
         })
-      };
 
-      console.log('data', data);
-      res.json({ success: userWithGroup, error: null, url: req.url });
-    }
-  });
+        console.log('allUsersWithGroupData', allUsersWithGroupData);
+        resolve(allUsersWithGroupData);
+      }
+    });
+  })
+
+}
+
+app.get('/user-admin', async function (req, res) {
+  // Add your code here
+
+  try {
+    console.log("canPerformAction")
+    await canPerformAction(req.apiGateway.event, 'admin');
+    const userWithGroupData = await getAllUsers();
+    console.log(userWithGroupData)
+    res.json(userWithGroupData);
+  } catch (err) {
+    return { error: err }
+  }
+
+
 });
 
-app.delete('/user-admin/delete', function (req, res) {
+app.delete('/user-admin/delete', async function (req, res) {
   var params = {
     UserPoolId: authTechradar7713fa94UserPoolId /* required */,
     Username: req.body.username /* required */,
   };
-  CognitoIdentityServiceProvider.adminDeleteUser(params, function (err, data) {Y
-    if (err) {
-      res.json({ success: null, error: err, url: req.url });
-    } else {
-      res.json({ success: data, error: null, url: req.url });
-    }
-  });
+
+  try {
+    await canPerformAction(req.apiGateway.event, 'admin');
+    cognito.adminDeleteUser(params, function (err, data) {
+      if (err) {
+        res.json({ success: null, error: err, url: req.url });
+      } else {
+        res.json({ success: data, error: null, url: req.url });
+      }
+    });
+  } catch(err) {
+      res.json({ error: err })
+  }
 });
 
 app.post('/user-admin/update', function (req, res) {
@@ -198,7 +258,7 @@ app.post('/user-admin/update', function (req, res) {
     Username: req.body.username /* required */,
   };
 
-  CognitoIdentityServiceProvider.adminUpdateUserAttributes(params, function (err, data) {
+  cognito.adminUpdateUserAttributes(params, function (err, data) {
     if (err) {
       res.json({ success: null, error: err, url: req.url });
     } else {
