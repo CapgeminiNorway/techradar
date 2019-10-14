@@ -146,7 +146,6 @@ app.get('/user-admin', function(req, res) {
   };
   CognitoIdentityServiceProvider.listUsers(params, (err, data) => {
 
-
     if (err) {
       console.log(err);
       res.json({ success: null, error: err, url: req.url });
@@ -159,9 +158,10 @@ app.get('/user-admin', function(req, res) {
           Username: data.Users.Username
         }
         CognitoIdentityServiceProvider.adminListGroupsForUser(userParams, function(_err, _data) {
+          console.log("adminGetGroup: " + _data);
           userWithGroup.push({
             ...data.Users,
-            _data
+            ..._data
           })
         })
      };
