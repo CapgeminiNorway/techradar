@@ -6,20 +6,21 @@ var authTechradar7713fa94UserPoolId = process.env.AUTH_TECHRADAR7713FA94_USERPOO
 var apiTechradarGraphQLAPIIdOutput = process.env.API_TECHRADAR_GRAPHQLAPIIDOUTPUT
 var apiTechradarGraphQLAPIEndpointOutput = process.env.API_TECHRADAR_GRAPHQLAPIENDPOINTOUTPUT
 
-Amplify Params - DO NOT EDIT */const express = require('express')
+Amplify Params - DO NOT EDIT */
+
+const express = require('express')
 const bodyParser = require('body-parser')
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 const excel = require('exceljs');
 const tempfile = require('tempfile');
 const AWS = require('aws-sdk');
-const CognitoIdentityServiceProvider = require('aws-sdk/clients/cognitoidentityserviceprovider');
 
-AWS.config.update({ region: process.env.TABLE_REGION });
+const cognito = new AWS.CognitoIdentityServiceProvider({ apiVersion: '2016-04-19', region: process.env.REGION });
 
-var environment = process.env.ENV
-var authTechradar7713fa94UserPoolId = process.env.AUTH_TECHRADAR7713FA94_USERPOOLID
-var apiTechradarGraphQLAPIIdOutput = process.env.API_TECHRADAR_GRAPHQLAPIIDOUTPUT
-var apiTechradarGraphQLAPIEndpointOutput = process.env.API_TECHRADAR_GRAPHQLAPIENDPOINTOUTPUT
+const environment = process.env.ENV
+const authTechradar7713fa94UserPoolId = process.env.AUTH_TECHRADAR7713FA94_USERPOOLID
+const apiTechradarGraphQLAPIIdOutput = process.env.API_TECHRADAR_GRAPHQLAPIIDOUTPUT
+const apiTechradarGraphQLAPIEndpointOutput = process.env.API_TECHRADAR_GRAPHQLAPIENDPOINTOUTPUT
 
 console.log(authTechradar7713fa94UserPoolId);
 console.log(apiTechradarGraphQLAPIIdOutput);
@@ -33,14 +34,14 @@ app.use(bodyParser.json())
 app.use(awsServerlessExpressMiddleware.eventContext())
 
 // Enable CORS for all methods
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   next()
 });
 
 
-app.post('/jsonToExcel', function(req, res) {
+app.post('/jsonToExcel', function (req, res) {
   const workbook = new excel.Workbook(); //creating workbook
   const sheet = workbook.addWorksheet('TechRadarWorksheet'); //creating worksheet
 
@@ -49,7 +50,7 @@ app.post('/jsonToExcel', function(req, res) {
 
   sheet.addRow().values = Object.keys(currentRadarObj[0]);
 
-  currentRadarObj.forEach(function(item) {
+  currentRadarObj.forEach(function (item) {
     let valueArray = [];
     valueArray = Object.values(item); // forming an array of values of single json in an array
     sheet.addRow().values = valueArray; // add the array as a row in sheet
@@ -59,10 +60,10 @@ app.post('/jsonToExcel', function(req, res) {
     const tempFilePath = tempfile('.csv');
     console.log('tempFilePath : ', tempFilePath);
 
-    workbook.csv.writeFile(tempFilePath).then(function() {
+    workbook.csv.writeFile(tempFilePath).then(function () {
       console.log('file is written');
       // res.setHeader('Content-disposition', 'attachment; filename=tech-radar.xlsx');
-      res.sendFile(tempFilePath, function(err) {
+      res.sendFile(tempFilePath, function (err) {
         if (err) {
           console.log('error in response: ', res);
           console.error('---------- error downloading file: ', err);
@@ -85,7 +86,7 @@ const techTableName = `Tech-${tableHash}`;
  * HTTP Get method for all Radars where public is true *
  ********************************/
 
-app.get("/public-radar", function(req, res) {
+app.get("/public-radar", function (req, res) {
 
   let queryParams = {
     TableName: radarTableName,
@@ -138,64 +139,144 @@ async function getRadarWithTech(radar) {
 
 }
 
-app.get('/user-admin', function(req, res) {
-  // Add your code here
-  var params = {
+async function getGroupsForUser(event) {
+  // first gets the user attributes from the sub of the user invoking the event
+  let userSub = event.requestContext.identity.cognitoAuthenticationProvider.split(':CognitoSignIn:')[1]
+  let userParams = {
     UserPoolId: authTechradar7713fa94UserPoolId,
-    AttributesToGet: ['email', 'username'],
-  };
-  CognitoIdentityServiceProvider.listUsers(params, (err, data) => {
-    if (err) {
-      console.log(err);
-      res.json({ success: null, error: err, url: req.url });
-    } else {
-      console.log('data', data);
-      res.json({ success: data, error: null, url: req.url });
-    }
-  });
-});
+    Filter: `sub = "${userSub}"`,
+  }
+  let userData = await cognito.listUsers(userParams).promise()
+  const user = userData.Users[0]
+  // next gets the groups for the user invoking the event
+  var groupParams = {
+    UserPoolId: authTechradar7713fa94UserPoolId,
+    Username: user.Username
+  }
+  const groupData = await cognito.adminListGroupsForUser(groupParams).promise()
+  // returns the group data
+  return groupData
+}
 
-app.get('/user-admin/*', function(req, res) {
+async function getUserWithGroupData(user) {
+  // gets the groups for the user
+  var groupParams = {
+    UserPoolId: authTechradar7713fa94UserPoolId,
+    Username: user.Username
+  }
+  const groupData = await cognito.adminListGroupsForUser(groupParams).promise()
+  // returns the group data
+  return { ...user, ...groupData }
+}
+
+async function canPerformAction(event, group) {
+  return new Promise(async (resolve, reject) => {
+    if (!event.requestContext.identity.cognitoAuthenticationProvider) {
+      return reject('not authorized to perform this action')
+    }
+    const groupData = await getGroupsForUser(event)
+    const groupsForUser = groupData.Groups.map(group => group.GroupName)
+    if (groupsForUser.includes(group)) {
+      console.log("includes user in group");
+      resolve()
+    } else {
+      reject('user not in group, cannot perform action..')
+    }
+  })
+}
+
+async function getAllUsers() {
+  const params = {
+    UserPoolId: authTechradar7713fa94UserPoolId
+  };
+
+  return new Promise(async (resolve, reject) => {
+
+    cognito.listUsers(params, (err, data) => {
+
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        const allUsersWithGroupData = data.Users.map(async user => {
+          return await getUserWithGroupData(user)
+        })
+
+        console.log('allUsersWithGroupData', allUsersWithGroupData);
+        resolve(allUsersWithGroupData);
+      }
+    });
+  })
+
+}
+
+app.get('/user-admin', async function (req, res) {
   // Add your code here
-  res.json({ success: 'get call succeed!', url: req.url });
+
+  try {
+    await canPerformAction(req.apiGateway.event, 'admin');
+    console.log("canPerformAction")
+    const userWithGroupData = await getAllUsers();
+    const response = await Promise.all(userWithGroupData).then( data => {
+      console.log("res: ", data);
+      return data;
+    })
+    res.json(response);
+  } catch (err) {
+    return { error: err }
+  }
+
+
 });
 
-app.delete('/user-admin/admin', function(req, res) {
+// app.delete('/user-admin/delete', async function (req, res) {
+//   var params = {
+//     UserPoolId: authTechradar7713fa94UserPoolId /* required */,
+//     Username: req.body.username /* required */,
+//   };
+
+//   try {
+//     await canPerformAction(req.apiGateway.event, 'admin');
+//     cognito.adminDeleteUser(params, function (err, data) {
+//       if (err) {
+//         res.json({ success: null, error: err, url: req.url });
+//       } else {
+//         res.json({ success: data, error: null, url: req.url });
+//       }
+//     });
+//   } catch(err) {
+//       res.json({ error: err })
+//   }
+// });
+
+app.post('/set-admin', async function (req, res) {
+
+  await canPerformAction(req.apiGateway.event, 'admin');
+  console.log("canPerformAction")
+
   var params = {
-    UserPoolId: authTechradar7713fa94UserPoolId /* required */,
-    Username: req.body.username /* required */,
+    GroupName: 'admin', //The name of the group in you cognito user pool that you want to add the user to
+    UserPoolId: authTechradar7713fa94UserPoolId, 
+    Username: req.body.Username
   };
-  CognitoIdentityServiceProvider.adminDeleteUser(params, function(err, data) {
+
+  cognito.adminAddUserToGroup(params, function (err, data) {
     if (err) {
       res.json({ success: null, error: err, url: req.url });
     } else {
-      res.json({ success: data, error: null, url: req.url });
+      res.json(data);
     }
   });
 });
 
-app.delete('/user-admin/user', function(req, res) {
-  var params = {
-    UserPoolId: authTechradar7713fa94UserPoolId /* required */,
-    AccessToken: req.header.accessToken,
-  };
 
-  CognitoIdentityServiceProvider.deleteUser(params, function(err, data) {
-    if (err) {
-      res.json({ success: null, error: err, url: req.url });
-    } else {
-      res.json({ success: data, error: null, url: req.url });
-    }
-  });
-});
-
-app.delete('/user-admin/*', function(req, res) {
+app.delete('/user-admin/*', function (req, res) {
   // Add your code here
   res.json({ success: 'delete call succeed!', url: req.url });
 });
 
-app.listen(3000, function() {
-    console.log("App started")
+app.listen(3000, function () {
+  console.log("App started")
 });
 
 // Export the app object. When executing the application local this does nothing. However,

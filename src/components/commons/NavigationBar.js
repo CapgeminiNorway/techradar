@@ -54,13 +54,18 @@ const Buttons = React.memo(({ history }) => {
     history.push('/edit/word-cloud');
   };
 
+  const toUserManagement = () => {
+    dispatch(setModal(MODAL_TYPES.USER_MANAGEMENT));
+  };
+
   return (
     <>
       <button onClick={toRadar}>> Radar</button>
       <button onClick={toWordCloud}>> Word Cloud</button>
-      <button onClick={openAddTechModal}>+ Add Tech</button>
-      {currentUser && currentUser.isAdmin && <button onClick={openManageRadar}>+ Add Radar</button>}
-      <button onClick={openAbout}>? About</button>
+      <button onClick={openAddTechModal}>Add Tech</button>
+      {currentUser && currentUser.isAdmin &&  <button onClick={toUserManagement}>Users</button> }
+      {currentUser && currentUser.isAdmin && <button onClick={openManageRadar}>Add Radar</button>}
+      <button onClick={openAbout}>About</button>
       <button onClick={() => dispatch(signOut())}>Sign out</button>
     </>
   );
@@ -77,8 +82,10 @@ export const NavIcon = styled.div`
 `;
 
 const MobileNavButton = styled.nav`
-  width: 100vw;
-  height: 50px;
+  min-width: 100vw;
+  max-width: 100vw;
+  min-height: 80px;
+  max-height: 80px;
   bottom: 0;
   z-index: 1000;
   position: fixed;
@@ -87,6 +94,7 @@ const MobileNavButton = styled.nav`
 
   a,
   button {
+    width: calc(100% / 6); 
     flex-grow: 1;
     border-radius: 0;
     color: ${(props) => props.theme.default.lightColor};
@@ -100,6 +108,7 @@ export const StyledNavBar = styled.nav`
   padding: 0.5em;
   justify-content: space-between;
   align-items: center;
+  height: 5vh;
 
   a,
   select,

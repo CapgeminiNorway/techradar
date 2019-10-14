@@ -55,9 +55,9 @@ export function radar_visualization(config) {
 
   const legend_offset = [
     { x: 450, y: 90 },
-    { x: -675, y: 90 },
-    { x: -675, y: -310 },
-    { x: 450, y: -310 },
+    { x: -700, y: 90 },
+    { x: -700, y: -400 },
+    { x: 450, y: -400 },
   ];
 
   function polar(cartesian) {
@@ -179,15 +179,6 @@ export function radar_visualization(config) {
     return 'translate(' + x + ',' + y + ')';
   }
 
-  function viewbox(quadrant) {
-    return [
-      Math.max(0, quadrants[quadrant].factor_x * 400) - 420,
-      Math.max(0, quadrants[quadrant].factor_y * 400) - 420,
-      440,
-      440,
-    ].join(' ');
-  }
-
   let svg = d3
     .select('svg#' + config.svg_id)
     .style('background-color', config.colors.background)
@@ -195,11 +186,10 @@ export function radar_visualization(config) {
     .attr('height', vh);
 
   let radar = svg.append('g');
-  if ('zoomed_quadrant' in config) {
-    svg.attr('viewBox', viewbox(config.zoomed_quadrant));
-  } else {
-    radar.attr('transform', translate(vw / 2, vh / 2));
-  }
+
+  const posWidth = config.isMobile ? vw / 2 : vw / 2;
+  const posHeight = config.isMobile ? vh / 2 : vh / 2.1;
+  radar.attr('transform', translate(posWidth, posHeight));
 
   let grid = radar.append('g');
 
@@ -260,7 +250,7 @@ export function radar_visualization(config) {
   }
 
   function legend_transform(quadrant, ring, index = null) {
-    let dx = ring < 2 ? 0 : 120;
+    let dx = ring < 2 ? 0 : 170;
     let dy = index == null ? -16 : index * 12;
     if (ring % 2 === 1) {
       dy = dy + 69 + segmented[quadrant][ring - 1].length * 12;
@@ -323,10 +313,10 @@ export function radar_visualization(config) {
             return 'legendItem' + d.id;
           })
           .text(function(d, i) {
-            return d.id + '. ' + d.label;
+            return d.id + '. ' + d.label.substring(0, 24);
           })
           .style('font-family', 'Arial, Helvetica')
-          .style('font-size', '14')
+          .style('font-size', '12')
           .style('fill', config.textColor)
           .on('mouseover', function(d) {
             showBubble(d);

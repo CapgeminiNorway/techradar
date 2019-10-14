@@ -4,7 +4,7 @@ import * as helper from '../../function.helper';
 import * as q from '../../graphql/queries';
 import { getRadarAllTech } from '../../graphql/custom';
 import * as m from '../../graphql/mutations';
-import { getUrlRadars, toggleUserWarning } from './gui.action';
+import { getUrlRadars, toggleUserWarning, setModal } from './gui.action';
 import { SET_IS_LOADING } from '../types/gui.type';
 
 export const getToggledRadarTech = (radar, nextToken = null, prevRadarTechList = []) => async (
@@ -61,6 +61,7 @@ export const updateTech = (tech) => async (dispatch, getState) => {
 
   try {
     await API.graphql(graphqlOperation(m.updateTech, { input: updTechObj }));
+    dispatch(setModal(null))
     if (!currentUser.isAdmin) {
       dispatch(toggleUserWarning(`Updated ${tech.name}, sent to Admin for review!`));
     } else {
@@ -79,6 +80,34 @@ export const silentlyDeleteDupeTech = (id) => async (dispatch) => {
   } catch (err) {
     console.error(err);
   }
+};
+
+export const silentlyConfirmTech = (unconfirmedTech) => async (dispatch, getState) => {
+  const { currentUser } = getState().user;
+
+  if (!currentUser.isAdmin) {
+    return alert('Only administrators can confirm technology');
+  }
+  const conf = window.confirm(
+    'Are you sure you want to confirm all technology at once?',
+  );
+  if (!conf) return null;
+
+  dispatch({ type: SET_IS_LOADING, payload: true });
+
+  unconfirmedTech.forEach( async tech => {
+    const updTechObj = {
+      ...tech,
+      confirmed: currentUser.isAdmin,
+    };
+    try {
+      await API.graphql(graphqlOperation(m.updateTech, { input: updTechObj }));
+    } catch (err) {
+      console.error(err);
+    }
+  })
+
+ 
 };
 
 export const deleteRadar = (radar) => async (dispatch, getState) => {
@@ -201,6 +230,8 @@ export const addRadar = (radarForm) => async (dispatch) => {
     console.log(newRadar);
     const radar = await API.graphql(graphqlOperation(m.createRadar, { input: newRadar }));
     dispatch(toggleUserWarning(`Created radar ${newRadar.id}`));
+    dispatch({type: types.SET_CURRENT_RADAR, payload: []});
+    dispatch({type: types.SET_CURRENT_TECH, payload: []})
     return radar;
   } catch (err) {
     dispatch(toggleUserWarning(getNetworkErrMsg(err)));
@@ -218,14 +249,13 @@ export const updateTechRadar = (newRadar) => async (dispatch, getState) => {
         }),
       );
     });
+    dispatch(toggleRadar(newRadar));
   } catch (err) {
     dispatch(toggleUserWarning(getNetworkErrMsg(err)));
   }
 };
 
-export const getAllRadars = (prevRadarList = [], hasNextToken = null, location) => async (
-  dispatch,
-) => {
+export const getAllRadars = (prevRadarList = [], hasNextToken = null) => async (dispatch) => {
   try {
     const getRadarListResult = await API.graphql(
       graphqlOperation(q.listRadars, { nextToken: hasNextToken }),
@@ -236,10 +266,11 @@ export const getAllRadars = (prevRadarList = [], hasNextToken = null, location) 
     dispatch({ type: SET_IS_LOADING, payload: true });
 
     if (radarResult.nextToken) {
-      await getAllRadars(updatedAllRadarList, radarResult.nextToken);
+      await dispatch(getAllRadars(updatedAllRadarList, radarResult.nextToken));
     } else {
       dispatch({ type: types.SET_ALL_RADARS, payload: updatedAllRadarList });
-      dispatch(getUrlRadars(updatedAllRadarList, location));
+      dispatch(getUrlRadars(updatedAllRadarList));
+      dispatch({ type: SET_IS_LOADING, payload: false });
     }
   } catch (err) {
     console.error(err);

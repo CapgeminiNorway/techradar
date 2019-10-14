@@ -83,8 +83,13 @@
 				"Runtime": "nodejs10.x",
 				"Timeout": "25",
 				"Code": {
+<<<<<<< HEAD
 					"S3Bucket": "techradar-dev-20191009220654-deployment",
 					"S3Key": "amplify-builds/techradarREST-463547314d5032785664-build.zip"
+=======
+					"S3Bucket": "techradar-prod-20191011204142-deployment",
+					"S3Key": "amplify-builds/techradarREST-63426757647869486662-build.zip"
+>>>>>>> master
 				}
 			}
 		},

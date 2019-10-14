@@ -5,22 +5,24 @@ import { getQuadrant, dynamicSortMultiple } from '../function.helper';
 import { useDebounce } from 'use-debounce';
 import { stylesTheme } from '../index';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentTech, toggleRadar, deleteRadar } from '../redux/actions/radar.action';
+import { setCurrentTech, toggleRadar, deleteRadar, silentlyConfirmTech } from '../redux/actions/radar.action';
 import { getConfirmedTech, getUnconfirmedTech } from '../redux/selectors/radar.selector';
 import { setModal } from '../redux/actions/gui.action';
 import Icon, { ICON_TYPES } from '../assets/icons/IconComponent';
 import { MODAL_TYPES } from './commons/Modal';
+import { WhiteButton } from './pages/GenerateWordCloud';
 
 function TechList({ handleClick, multiList }) {
   const dispatch = useDispatch();
   const { currentRadarList, allRadars } = useSelector((state) => state.radar);
-  const currentUser = useSelector((state) => state.user.currentUser);
-  const isAdmin = currentUser && currentUser.isAdmin;
   const unconfirmedTech = useSelector((state) => getUnconfirmedTech(state));
   const confirmedTech = useSelector((state) => getConfirmedTech(state));
-
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const isAdmin = currentUser && currentUser.isAdmin;
   const [debounceTech, setDebounceTech] = useState(null);
   const [tech] = useDebounce(debounceTech, 100);
+
+  const dispatchConfirmAll = () => dispatch(silentlyConfirmTech(unconfirmedTech));
 
   useEffect(() => {
     dispatch(setCurrentTech(tech));
@@ -67,22 +69,48 @@ function TechList({ handleClick, multiList }) {
         <h5>All radars:</h5> {renderRadarList(allRadars)}
       </TechListWrapper>
       <TechListWrapper>
-        <h5>Unconfirmed Tech ({unconfirmedTech.length}):</h5>
-        <SortBar
-          list={unconfirmedTech}
-          multiList={multiList}
-          handleClick={handleClick}
-          setDebounceTech={setDebounceTech}
-        />
-      </TechListWrapper>
-      <TechListWrapper>
         <h5>Confirmed Tech ({confirmedTech.length}):</h5>
-        <SortBar
-          list={confirmedTech}
-          multiList={multiList}
-          handleClick={handleClick}
-          setDebounceTech={setDebounceTech}
-        />
+        {
+          !!confirmedTech.length ?
+            <>
+              <SortBar
+                list={confirmedTech}
+                multiList={multiList}
+                handleClick={handleClick}
+                setDebounceTech={setDebounceTech}
+              />
+            </>
+
+            :
+            <TechListItem>No technology in selected radars</TechListItem>
+        }
+
+      </TechListWrapper>
+
+      <TechListWrapper>
+        <h5>Unconfirmed Tech ({unconfirmedTech.length}):</h5>
+        {
+          !!unconfirmedTech.length ?
+            <>
+              {!!(currentUser && currentUser.isAdmin) &&
+                <ConfirmAllWrapper>
+                  <WhiteButton onClick={dispatchConfirmAll}>Confirm all</WhiteButton>
+                </ConfirmAllWrapper>
+              }
+
+              <SortBar
+                list={unconfirmedTech}
+                multiList={multiList}
+                handleClick={handleClick}
+                setDebounceTech={setDebounceTech}
+              />
+            </>
+            :
+            <TechListItem>No technology in selected radars</TechListItem>
+        }
+
+
+
       </TechListWrapper>
     </StyledTechList>
   );
@@ -94,6 +122,8 @@ const SortBar = ({ list, handleClick, multiList }) => {
   const dispatch = useDispatch();
   const { currentTech } = useSelector((state) => state.radar);
 
+  const [ searchString, setSearchString ] = React.useState("");
+ 
   const QUADRANT = 'quadrant',
     RING = 'ring',
     NAME = 'name';
@@ -118,9 +148,6 @@ const SortBar = ({ list, handleClick, multiList }) => {
   };
 
   const renderTechList = (_techList) => {
-    if (!_techList || !_techList.length) {
-      return <TechListItem>No technology in selected radars</TechListItem>;
-    }
     return _techList.map((tech, i) => {
       if (!tech) return null;
       return (
@@ -147,7 +174,16 @@ const SortBar = ({ list, handleClick, multiList }) => {
     }
   };
 
-  const returnFilter = (_techList) => {
+  const handleSearch = (e) => {
+    setSearchString(e.target.value);
+  }
+
+  const returnSearch = (_techList) => {
+    if (!searchString.length) return _techList;
+    return _techList.filter(t => t.name.includes(searchString));
+  };
+
+  const returnSort = (_techList) => {
     return _techList.sort(dynamicSortMultiple(currentFilters[0], currentFilters[1]));
   };
 
@@ -161,7 +197,13 @@ const SortBar = ({ list, handleClick, multiList }) => {
           <FilterButton setFilter={setFilter} buttonString={currentFilters[2]} />
         </div>
       </StyledFilterBar>
-      {renderTechList(returnFilter(list))}
+      <StyledFilterBar>
+        <label>Search:</label>
+        <div>
+        <SortInput placeholder="technology search ..." onChange={handleSearch} />
+        </div>
+      </StyledFilterBar>
+      {renderTechList(returnSearch(returnSort(list)))}
     </>
   );
 };
@@ -183,6 +225,35 @@ const FilterButton = ({ setFilter, buttonString, current }) => {
   );
 };
 
+const SortInput = styled.input`
+  width: 90%;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid white;
+  color: white;
+  padding: 4px 6px;
+  margin: 10px;
+  
+  ::placeholder {
+    color: rgba(255,255,255,0.5);
+  }
+`;
+
+const ConfirmAllWrapper = styled.div`
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 0 10px;
+
+button {
+  width: 100%;
+  :hover {
+    background: white;
+  }
+}
+
+`;
 const StyledTechList = styled.ol`
   display: flex;
   flex-direction: column;
@@ -190,8 +261,8 @@ const StyledTechList = styled.ol`
   background: ${(props) => props.theme.default.primaryColor};
   min-width: 300px;
   max-width: 300px;
-  height: 100vh;
   overflow-y: auto;
+  height: 95vh;
 
   h5 {
     margin: 1em 0;
@@ -201,9 +272,9 @@ const StyledTechList = styled.ol`
   @media (max-width: 768px) {
     min-width: 100%;
     max-width: 100%;
-    height: unset;
     padding: 1em;
     padding-bottom: 5em;
+    height: unset;
   }
 `;
 

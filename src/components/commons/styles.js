@@ -40,9 +40,6 @@ export const CenterContainerCol = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
 
-  @media (max-width: 768px) {
-    height: unset;
-  }
 `;
 export const defaultDelay = 50,
   defaultDuration = 300;
@@ -64,7 +61,7 @@ export const AnimateCurrentTech = posed.div({
     transition: {
       type: 'tween',
       duration: defaultDuration * 2,
-      delay: defaultDelay * 4,
+      delay: defaultDuration * 2,
       easing: 'easeInOut',
     },
   },
