@@ -14,14 +14,14 @@ import NavigationBar from './components/commons/NavigationBar';
 import Modal, { MODAL_TYPES } from './components/commons/Modal';
 import { useGraphQLSubscription } from './graphql.hook';
 import { setModal } from './redux/actions/gui.action';
-import { handleSetCurrentUser } from './redux/actions/user.action';
-import { getAllRadars, setCurrentTech } from './redux/actions/radar.action';
+import { handleSetCurrentUser, setAllUsers } from './redux/actions/user.action';
+import { getAllRadars } from './redux/actions/radar.action';
 import { useDispatch, useSelector } from 'react-redux';
 import About from './components/pages/About';
 import TechForm from './components/TechForm';
 import RadarForm from './components/RadarForm';
-import { API} from 'aws-amplify';
 import { useHash } from './custom-hooks';
+import UserManagement from './components/UserManagement';
 
 Amplify.Logger.LOG_LEVEL = "DEBUG";
 
@@ -48,17 +48,8 @@ const App = () => {
   const alert = useAlert();
 
   React.useEffect(() => {
-    async function getUsers() {
-      try {
-        const res = await API.get('techradarREST', '/user-admin');
-        console.log(res);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    getUsers();
-  }, [])
+    dispatch(setAllUsers())
+  }, [dispatch])
 
   React.useEffect(() => {
     const radarIdList = currentRadarList.map((radar) => {
@@ -87,6 +78,7 @@ const App = () => {
   const renderModal = () => {
     switch(ModalComponent) {
       case MODAL_TYPES.ABOUT: return <About />
+      case MODAL_TYPES.USER_MANAGEMENT: return <UserManagement />
       case MODAL_TYPES.TECH_FORM: return <TechForm />
       case MODAL_TYPES.RADAR_FORM: return <RadarForm />
       default: return null;

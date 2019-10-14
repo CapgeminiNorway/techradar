@@ -1,1 +1,4 @@
+export const SET_ALL_USERS = 'SET_ALL_USERS';
+export const ADD_USER_TO_LIST = 'ADD_USER_TO_LIST';
+export const REMOVE_USER_FROM_LIST = 'REMOVE_USER_FROM_LIST';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';

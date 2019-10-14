@@ -54,13 +54,18 @@ const Buttons = React.memo(({ history }) => {
     history.push('/edit/word-cloud');
   };
 
+  const toUserManagement = () => {
+    dispatch(setModal(MODAL_TYPES.USER_MANAGEMENT));
+  };
+
   return (
     <>
       <button onClick={toRadar}>> Radar</button>
       <button onClick={toWordCloud}>> Word Cloud</button>
-      <button onClick={openAddTechModal}>+ Add Tech</button>
-      {currentUser && currentUser.isAdmin && <button onClick={openManageRadar}>+ Add Radar</button>}
-      <button onClick={openAbout}>? About</button>
+      <button onClick={openAddTechModal}>Add Tech</button>
+      {currentUser && currentUser.isAdmin &&  <button onClick={toUserManagement}>Users</button> }
+      {currentUser && currentUser.isAdmin && <button onClick={openManageRadar}>Add Radar</button>}
+      <button onClick={openAbout}>About</button>
       <button onClick={() => dispatch(signOut())}>Sign out</button>
     </>
   );

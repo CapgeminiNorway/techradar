@@ -2,6 +2,7 @@ import * as types from '../types/user.type';
 
 export const initialState = {
   currentUser: {},
+  allUsers: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -12,6 +13,12 @@ const reducer = (state = initialState, action) => {
         currentUser: action.payload,
       };
 
+      case types.SET_ALL_USERS:
+        return {
+          ...state,
+          allUsers: action.payload,
+        };
+  
     default:
       return state;
   }

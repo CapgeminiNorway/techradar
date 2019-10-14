@@ -229,43 +229,42 @@ app.get('/user-admin', async function (req, res) {
 
 });
 
-app.delete('/user-admin/delete', async function (req, res) {
+// app.delete('/user-admin/delete', async function (req, res) {
+//   var params = {
+//     UserPoolId: authTechradar7713fa94UserPoolId /* required */,
+//     Username: req.body.username /* required */,
+//   };
+
+//   try {
+//     await canPerformAction(req.apiGateway.event, 'admin');
+//     cognito.adminDeleteUser(params, function (err, data) {
+//       if (err) {
+//         res.json({ success: null, error: err, url: req.url });
+//       } else {
+//         res.json({ success: data, error: null, url: req.url });
+//       }
+//     });
+//   } catch(err) {
+//       res.json({ error: err })
+//   }
+// });
+
+app.post('/user-admin/set-admin', async function (req, res) {
+
+  await canPerformAction(req.apiGateway.event, 'admin');
+  console.log("canPerformAction")
+
   var params = {
-    UserPoolId: authTechradar7713fa94UserPoolId /* required */,
-    Username: req.body.username /* required */,
+    GroupName: 'admin', //The name of the group in you cognito user pool that you want to add the user to
+    UserPoolId: authTechradar7713fa94UserPoolId, 
+    Username: req.body.Username
   };
 
-  try {
-    await canPerformAction(req.apiGateway.event, 'admin');
-    cognito.adminDeleteUser(params, function (err, data) {
-      if (err) {
-        res.json({ success: null, error: err, url: req.url });
-      } else {
-        res.json({ success: data, error: null, url: req.url });
-      }
-    });
-  } catch(err) {
-      res.json({ error: err })
-  }
-});
-
-app.post('/user-admin/update', function (req, res) {
-  var params = {
-    UserAttributes: [
-      {
-        Name: req.body.UserAttribute, //'YOUR_USER_ATTRIBUTE_NAME',
-        Value: 'YOUR_USER_ATTRIBUTE_VALUE'
-      }
-    ],
-    UserPoolId: authTechradar7713fa94UserPoolId /* required */,
-    Username: req.body.username /* required */,
-  };
-
-  cognito.adminUpdateUserAttributes(params, function (err, data) {
+  cognito.adminAddUserToGroup(params, function (err, data) {
     if (err) {
       res.json({ success: null, error: err, url: req.url });
     } else {
-      res.json({ success: data, error: null, url: req.url });
+      res.json(data);
     }
   });
 });

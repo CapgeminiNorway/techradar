@@ -1,6 +1,6 @@
 import * as types from '../types/user.type';
 import LogRocket from 'logrocket';
-import { Auth } from 'aws-amplify';
+import { Auth, API } from 'aws-amplify';
 
 export const setupLogRocket = (currentUser) => {
   LogRocket.identify(currentUser.id, {
@@ -11,7 +11,50 @@ export const setupLogRocket = (currentUser) => {
   });
 };
 
-export const handleSetCurrentUser = () => (dispatch) => {
+export const makeAdmin = (user) => async (dispatch, getState) => {
+  const res = await API.get('techradarREST', '/user-admin/set-admin', {
+    body: user
+  });
+  dispatch({
+    type: types.SET_ALL_USERS,
+    payload: [
+      res,
+      ...getState().user.allUsers
+    ]
+  })
+}
+  export const setAllUsers = () => async (dispatch) => {
+    try {
+      const res = await API.get('techradarREST', '/user-admin');
+
+      const additionalData = res.map( user => {
+        let email = "";
+        let role = "";
+        user.Attributes.forEach( ({Name, Value})  => {
+          if (Name === "email") {
+            email = Value;
+          }
+        })
+        user.Groups.forEach( ({ GroupName }) => {
+          if (GroupName === "admin") role = GroupName;
+        })
+        if (role.length === 0) role = "user";
+        return {
+          email,
+          role,
+          ...res
+        }
+      });
+      dispatch({
+        type: types.SET_ALL_USERS,
+        payload: additionalData
+      })
+    } catch (err) {
+      console.error(err);
+    }
+
+}
+  export const handleSetCurrentUser = () => (dispatch) => {
   Auth.currentAuthenticatedUser().then((user) => {
     console.log('Authenticated user: ');
     console.log(user);
