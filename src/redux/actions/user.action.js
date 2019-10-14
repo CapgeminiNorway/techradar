@@ -12,17 +12,33 @@ export const setupLogRocket = (currentUser) => {
 };
 
 export const makeAdmin = (user) => async (dispatch, getState) => {
-  const res = await API.get('techradarREST', '/user-admin/set-admin', {
-    body: user
-  });
-  dispatch({
-    type: types.SET_ALL_USERS,
-    payload: [
-      res,
-      ...getState().user.allUsers
-    ]
-  })
+
+  try {
+    await API.post('techradarREST', '/set-admin', {
+      body: {
+        Username: user.Username
+      }
+    });
+    const { allUsers } = getState().user;
+
+    const updatedAllUsers = allUsers.map (_user => {
+      if (_user.Username === user.Username) {
+        return {
+          ...user,
+          role: "admin"
+        }
+      } else return _user;
+    })
+
+    dispatch({
+      type: types.SET_ALL_USERS,
+      payload: updatedAllUsers
+    })
+  } catch (err) {
+    console.error(err);
+  }
 }
+
   export const setAllUsers = () => async (dispatch) => {
     try {
       const res = await API.get('techradarREST', '/user-admin');
@@ -42,7 +58,7 @@ export const makeAdmin = (user) => async (dispatch, getState) => {
         return {
           email,
           role,
-          ...res
+          ...user
         }
       });
       dispatch({

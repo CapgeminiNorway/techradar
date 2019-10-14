@@ -12,7 +12,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toggleUserWarning, setModal } from '../redux/actions/gui.action';
 import { StyledAnimateCurrentTech } from './commons/styles';
 import { PoseGroup } from 'react-pose';
-import TechForm from './TechForm';
 import { useWindowSize } from '../custom-hooks';
 import { MODAL_TYPES } from './commons/Modal';
 import { setCurrentTech } from '../redux/actions/radar.action';
@@ -21,7 +20,7 @@ function Radar({ publicPage, techList, history }) {
   const { currentRadarList } = useSelector((state) => state.radar);
   const dispatch = useDispatch();
 
-  const { height, width } = useWindowSize();
+  const { width } = useWindowSize();
   const mobileAgent = window.navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/);
   const isMobile = React.useMemo(() => {
     return width < 768 || mobileAgent;

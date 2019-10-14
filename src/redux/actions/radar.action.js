@@ -85,6 +85,14 @@ export const silentlyDeleteDupeTech = (id) => async (dispatch) => {
 export const silentlyConfirmTech = (unconfirmedTech) => async (dispatch, getState) => {
   const { currentUser } = getState().user;
 
+  if (!currentUser.isAdmin) {
+    return alert('Only administrators can confirm technology');
+  }
+  const conf = window.confirm(
+    'Are you sure you want to confirm all technology at once?',
+  );
+  if (!conf) return null;
+
   dispatch({ type: SET_IS_LOADING, payload: true });
 
   unconfirmedTech.forEach( async tech => {
@@ -222,6 +230,8 @@ export const addRadar = (radarForm) => async (dispatch) => {
     console.log(newRadar);
     const radar = await API.graphql(graphqlOperation(m.createRadar, { input: newRadar }));
     dispatch(toggleUserWarning(`Created radar ${newRadar.id}`));
+    dispatch({type: types.SET_CURRENT_RADAR, payload: []});
+    dispatch({type: types.SET_CURRENT_TECH, payload: []})
     return radar;
   } catch (err) {
     dispatch(toggleUserWarning(getNetworkErrMsg(err)));
@@ -239,6 +249,7 @@ export const updateTechRadar = (newRadar) => async (dispatch, getState) => {
         }),
       );
     });
+    dispatch(toggleRadar(newRadar));
   } catch (err) {
     dispatch(toggleUserWarning(getNetworkErrMsg(err)));
   }
@@ -255,7 +266,7 @@ export const getAllRadars = (prevRadarList = [], hasNextToken = null) => async (
     dispatch({ type: SET_IS_LOADING, payload: true });
 
     if (radarResult.nextToken) {
-      await getAllRadars(updatedAllRadarList, radarResult.nextToken);
+      await dispatch(getAllRadars(updatedAllRadarList, radarResult.nextToken));
     } else {
       dispatch({ type: types.SET_ALL_RADARS, payload: updatedAllRadarList });
       dispatch(getUrlRadars(updatedAllRadarList));

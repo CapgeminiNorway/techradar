@@ -23,8 +23,9 @@ import RadarForm from './components/RadarForm';
 import { useHash } from './custom-hooks';
 import UserManagement from './components/UserManagement';
 
-Amplify.Logger.LOG_LEVEL = "DEBUG";
-
+if (process.env.NODE_ENV !== "production") {
+  Amplify.Logger.LOG_LEVEL = "DEBUG";
+}
 
 Amplify.configure(aws_exports);
 

@@ -5,7 +5,7 @@ import { getQuadrant, dynamicSortMultiple } from '../function.helper';
 import { useDebounce } from 'use-debounce';
 import { stylesTheme } from '../index';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentTech, toggleRadar, deleteRadar, updateTech, silentlyConfirmTech } from '../redux/actions/radar.action';
+import { setCurrentTech, toggleRadar, deleteRadar, silentlyConfirmTech } from '../redux/actions/radar.action';
 import { getConfirmedTech, getUnconfirmedTech } from '../redux/selectors/radar.selector';
 import { setModal } from '../redux/actions/gui.action';
 import Icon, { ICON_TYPES } from '../assets/icons/IconComponent';
@@ -262,6 +262,7 @@ const StyledTechList = styled.ol`
   min-width: 300px;
   max-width: 300px;
   overflow-y: auto;
+  height: 95vh;
 
   h5 {
     margin: 1em 0;
@@ -273,6 +274,7 @@ const StyledTechList = styled.ol`
     max-width: 100%;
     padding: 1em;
     padding-bottom: 5em;
+    height: unset;
   }
 `;
 

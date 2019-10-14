@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Checkbox from './commons/Checkbox';
 import { SubmitButton, ButtonSelector } from './TechForm';
 import { useDispatch } from 'react-redux';
 import { addRadar, updateTechRadar } from '../redux/actions/radar.action';
+import { setModal } from '../redux/actions/gui.action';
 
 const communityNames = [
   'Architecture',
@@ -59,11 +60,17 @@ const RadarForm = () => {
     if (disabled) return alert('Add a name to your Radar');
 
     try {
-      const radarResponse = await dispatch(addRadar(radarForm));
+      const radarResponse = await dispatch(addRadar({
+        id: radarForm.isPublic ? cop : radarForm.id,
+        description: radarForm.description,
+        isPublic: radarForm.isPublic
+      }));
       if (mergeTech) {
         await dispatch(updateTechRadar(radarResponse.data.createRadar));
       }
       setRadarForm(initialRadarForm);
+      toggleMergeTech(false);
+      dispatch(setModal(null))
     } catch (err) {}
   };
 

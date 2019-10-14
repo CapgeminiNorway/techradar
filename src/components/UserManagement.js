@@ -8,7 +8,10 @@ const UserManagement = () => {
   const { allUsers } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  const dispatchMakeAdmin = (user) => dispatch(makeAdmin(user))
+  const dispatchMakeAdmin = (user) => {
+    debugger;
+    dispatch(makeAdmin(user))
+  }
 
   const [ admins, users ] = React.useMemo( () => {
     let _admins = [], _users = [];
@@ -25,10 +28,8 @@ const UserManagement = () => {
       {admins.map(user => {
 
           return (
-            <UserItem>
+            <UserItem key={user.email}>
               {user.email}
-              <WhiteButton onClick={() => dispatchMakeAdmin(user)}>Make admin</WhiteButton>
-
             </UserItem>
           )
       })}
@@ -36,9 +37,8 @@ const UserManagement = () => {
       <h1>Users ({users.length})</h1>
 
       {users.map(user => {
-
           return (
-            <UserItem>
+            <UserItem key={user.email}>
               {user.email}
               <WhiteButton onClick={() => dispatchMakeAdmin(user)}>Make admin</WhiteButton>
             </UserItem>

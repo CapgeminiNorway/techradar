@@ -111,7 +111,7 @@ export const ModalContent = styled.div`
 `;
 
 export const StyledModal = styled(SlideVerticalAnimation)`
-  box-shadow: 5px 5px 50rem 50rem rgb(0, 0, 0, 0.5);
+  box-shadow: 5px 5px 500rem 500rem rgb(0, 0, 0, 0.5);
   position: fixed;
   overflow: hidden;
   padding-bottom: 100px;
