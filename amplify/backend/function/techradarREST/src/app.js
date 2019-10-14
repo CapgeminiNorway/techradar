@@ -15,7 +15,7 @@ const excel = require('exceljs');
 const tempfile = require('tempfile');
 const AWS = require('aws-sdk');
 
-const CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({apiVersion: '2016-04-19', region: process.env.REGION});
+const CognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({ apiVersion: '2016-04-19', region: process.env.REGION });
 
 const environment = process.env.ENV
 const authTechradar7713fa94UserPoolId = process.env.AUTH_TECHRADAR7713FA94_USERPOOLID
@@ -34,14 +34,14 @@ app.use(bodyParser.json())
 app.use(awsServerlessExpressMiddleware.eventContext())
 
 // Enable CORS for all methods
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   next()
 });
 
 
-app.post('/jsonToExcel', function(req, res) {
+app.post('/jsonToExcel', function (req, res) {
   const workbook = new excel.Workbook(); //creating workbook
   const sheet = workbook.addWorksheet('TechRadarWorksheet'); //creating worksheet
 
@@ -50,7 +50,7 @@ app.post('/jsonToExcel', function(req, res) {
 
   sheet.addRow().values = Object.keys(currentRadarObj[0]);
 
-  currentRadarObj.forEach(function(item) {
+  currentRadarObj.forEach(function (item) {
     let valueArray = [];
     valueArray = Object.values(item); // forming an array of values of single json in an array
     sheet.addRow().values = valueArray; // add the array as a row in sheet
@@ -60,10 +60,10 @@ app.post('/jsonToExcel', function(req, res) {
     const tempFilePath = tempfile('.csv');
     console.log('tempFilePath : ', tempFilePath);
 
-    workbook.csv.writeFile(tempFilePath).then(function() {
+    workbook.csv.writeFile(tempFilePath).then(function () {
       console.log('file is written');
       // res.setHeader('Content-disposition', 'attachment; filename=tech-radar.xlsx');
-      res.sendFile(tempFilePath, function(err) {
+      res.sendFile(tempFilePath, function (err) {
         if (err) {
           console.log('error in response: ', res);
           console.error('---------- error downloading file: ', err);
@@ -86,7 +86,7 @@ const techTableName = `Tech-${tableHash}`;
  * HTTP Get method for all Radars where public is true *
  ********************************/
 
-app.get("/public-radar", function(req, res) {
+app.get("/public-radar", function (req, res) {
 
   let queryParams = {
     TableName: radarTableName,
@@ -139,7 +139,7 @@ async function getRadarWithTech(radar) {
 
 }
 
-app.get('/user-admin', function(req, res) {
+app.get('/user-admin', function (req, res) {
   // Add your code here
   var params = {
     UserPoolId: authTechradar7713fa94UserPoolId
@@ -151,33 +151,33 @@ app.get('/user-admin', function(req, res) {
       res.json({ success: null, error: err, url: req.url });
     } else {
       let userWithGroup = []
-      
+
       for (let i = 0; i < data.Users.length; i++) {
         const userParams = {
-          ...params,
+          UserPoolId: authTechradar7713fa94UserPoolId,
           Username: data.Users.Username
         }
-        CognitoIdentityServiceProvider.adminListGroupsForUser(userParams, function(_err, _data) {
+        CognitoIdentityServiceProvider.adminListGroupsForUser(userParams, function (_err, _data) {
           console.log("adminGetGroup: " + _data);
           userWithGroup.push({
             ...data.Users,
-            ..._data
+            _data
           })
         })
-     };
-    
+      };
+
       console.log('data', data);
       res.json({ success: userWithGroup, error: null, url: req.url });
     }
   });
 });
 
-app.delete('/user-admin/delete', function(req, res) {
+app.delete('/user-admin/delete', function (req, res) {
   var params = {
     UserPoolId: authTechradar7713fa94UserPoolId /* required */,
     Username: req.body.username /* required */,
   };
-  CognitoIdentityServiceProvider.adminDeleteUser(params, function(err, data) {
+  CognitoIdentityServiceProvider.adminDeleteUser(params, function (err, data) {
     if (err) {
       res.json({ success: null, error: err, url: req.url });
     } else {
@@ -186,7 +186,7 @@ app.delete('/user-admin/delete', function(req, res) {
   });
 });
 
-app.post('/user-admin/update', function(req, res) {
+app.post('/user-admin/update', function (req, res) {
   var params = {
     UserAttributes: [
       {
@@ -197,24 +197,24 @@ app.post('/user-admin/update', function(req, res) {
     UserPoolId: authTechradar7713fa94UserPoolId /* required */,
     Username: req.body.username /* required */,
   };
-  
-  CognitoIdentityServiceProvider.adminUpdateUserAttributes(params, function(err, data) {
-      if (err) {
-        res.json({ success: null, error: err, url: req.url });
-      } else {
-        res.json({ success: data, error: null, url: req.url });
-      }
-    });
-});
-  
 
-app.delete('/user-admin/*', function(req, res) {
+  CognitoIdentityServiceProvider.adminUpdateUserAttributes(params, function (err, data) {
+    if (err) {
+      res.json({ success: null, error: err, url: req.url });
+    } else {
+      res.json({ success: data, error: null, url: req.url });
+    }
+  });
+});
+
+
+app.delete('/user-admin/*', function (req, res) {
   // Add your code here
   res.json({ success: 'delete call succeed!', url: req.url });
 });
 
-app.listen(3000, function() {
-    console.log("App started")
+app.listen(3000, function () {
+  console.log("App started")
 });
 
 // Export the app object. When executing the application local this does nothing. However,
