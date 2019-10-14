@@ -77,7 +77,8 @@ export const NavIcon = styled.div`
 `;
 
 const MobileNavButton = styled.nav`
-  width: 100vw;
+  min-width: 100vw;
+  max-width: 100vw;
   min-height: 80px;
   max-height: 80px;
   bottom: 0;
@@ -88,6 +89,7 @@ const MobileNavButton = styled.nav`
 
   a,
   button {
+    width: calc(100% / 6); 
     flex-grow: 1;
     border-radius: 0;
     color: ${(props) => props.theme.default.lightColor};

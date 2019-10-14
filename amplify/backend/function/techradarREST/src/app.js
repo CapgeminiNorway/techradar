@@ -155,7 +155,7 @@ app.get('/user-admin', function (req, res) {
       for (let i = 0; i < data.Users.length; i++) {
         const userParams = {
           UserPoolId: authTechradar7713fa94UserPoolId,
-          Username: data.Users.Username
+          Username: data.Users[i].Username
         }
         CognitoIdentityServiceProvider.adminListGroupsForUser(userParams, function (_err, _data) {
           console.log("adminGetGroup: " + _data);
@@ -177,7 +177,7 @@ app.delete('/user-admin/delete', function (req, res) {
     UserPoolId: authTechradar7713fa94UserPoolId /* required */,
     Username: req.body.username /* required */,
   };
-  CognitoIdentityServiceProvider.adminDeleteUser(params, function (err, data) {
+  CognitoIdentityServiceProvider.adminDeleteUser(params, function (err, data) {Y
     if (err) {
       res.json({ success: null, error: err, url: req.url });
     } else {

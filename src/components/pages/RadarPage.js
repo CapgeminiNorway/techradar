@@ -31,7 +31,6 @@ const RadarPageWrapper = styled.div`
     #radarParent,
     #radar {
       width: 100vw;
-      margin-bottom: 2em;
     }
   }
 `;

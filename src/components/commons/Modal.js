@@ -113,6 +113,7 @@ export const StyledModal = styled(SlideVerticalAnimation)`
   box-shadow: 5px 5px 50rem 50rem rgb(0, 0, 0, 0.5);
   position: fixed;
   overflow: hidden;
+  padding-bottom: 100px;
   bottom: 10vh;
   top: 10vh;
   left: calc(50% - 200px);
@@ -135,6 +136,7 @@ export const StyledModal = styled(SlideVerticalAnimation)`
     left: 0;
     right: 0;
     top: 0;
+    padding-bottom: 100px;
     width: 100vw;
   }
 
