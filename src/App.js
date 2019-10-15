@@ -5,7 +5,6 @@ import aws_exports from './aws-exports';
 import { withAuthenticator } from 'aws-amplify-react';
 import Amplify from 'aws-amplify';
 import { Route } from 'react-router-dom';
-import AboutPage from './components/pages/About';
 import RadarPage from './components/pages/RadarPage';
 import WordCloudPage from './components/pages/GenerateWordCloud';
 import { useAlert } from 'react-alert';
@@ -92,10 +91,9 @@ const App = () => {
       </Modal>
       <NavigationBar />
 
-<ContentWrapper>
+    <ContentWrapper>
       <Route exact path="/edit" component={RadarPage} />
       <Route path="/edit/word-cloud" component={WordCloudPage} />
-      <Route path="/edit/about" component={AboutPage} />
       </ContentWrapper>
     </AppMainStyles>
   );
@@ -110,14 +108,15 @@ const ContentWrapper = styled.div`
   height: 95vh;
 `;
 const AppMainStyles = styled.div`
+  overflow: hidden;
   background-color: ${(props) => props.theme.default.backgroundColor};
-  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
   color: ${(props) => props.theme.default.lightColor};
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  width: 100vw;
 
   * {
     ::-webkit-scrollbar {

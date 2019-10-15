@@ -1,13 +1,13 @@
 import React from 'react';
-import TechList from '../TechList';
+import TechList, { opacityAnim } from '../TechList';
 import styled from 'styled-components';
 import layout from '../../d3/word_cloud';
 import { deleteItemFromList } from '../../function.helper';
 import { CenterContainerCol, StyledAnimateCurrentTech } from '../commons/styles';
-import { PoseGroup } from 'react-pose';
 import { useWindowSize, downloadSVG } from '../../helper';
 import { useSelector } from 'react-redux';
 import { getConfirmedTech } from '../../redux/selectors/radar.selector';
+import { PageWrapper } from "./RadarPage"; 
 
 const WordCloudPage = () => {
   const confirmedTech = useSelector((state) => getConfirmedTech(state));
@@ -35,7 +35,7 @@ const WordCloudPage = () => {
     while (radarParent && radarParent.firstChild) {
       radarParent.firstChild && radarParent.removeChild(radarParent.firstChild);
     }
-    layout(getWordCloudName, width / 1.5, height / 1.5).start();
+    layout(getWordCloudName, width / 1.5, height / 3).start();
   }, [getWordCloudName, cloudRef, width, height]);
 
   React.useEffect(() => {
@@ -43,7 +43,8 @@ const WordCloudPage = () => {
   }, [wordCloudList, regenerateCloud]);
 
   return (
-    <ManageRadarWrapper>
+    <PageWrapper initial="hidden"
+    animate="visible">
       <TechList
         headerText={'Technology Overview'}
         handleClick={handlePickTech}
@@ -54,9 +55,8 @@ const WordCloudPage = () => {
         techList={confirmedTech}
       />
 
-      <CenterContainerCol>
-        <PoseGroup animateOnMount={true} preEnterPose="preEnter">
-          <StyledAnimateCurrentTech key="cloud">
+      <CenterContainerCol variants={opacityAnim}>
+          <StyledAnimateCurrentTech>
             <h1>Word Cloud</h1>
             <p>
               By selecting technology in the list to the left you can create a word cloud based on
@@ -73,25 +73,13 @@ const WordCloudPage = () => {
             </ButtonBar>
             <StyledSvg key="svg" ref={cloudRef} id="word_cloud" />
           </StyledAnimateCurrentTech>
-        </PoseGroup>
       </CenterContainerCol>
-    </ManageRadarWrapper>
+    </PageWrapper>
   );
 };
 
 export default React.memo(WordCloudPage);
 
-const ManageRadarWrapper = styled.div`
-  height: 100%;
-  width: 100vw;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-
-  @media (max-width: 768px) {
-    flex-direction: column-reverse;
-  }
-`;
 
 export const ButtonBar = styled.div`
   display: flex;
@@ -111,6 +99,10 @@ export const WhiteButton = styled.button`
     color: ${(props) => props.theme.default.lightColor};
     background: ${(props) => props.theme.default.primaryColor};
   }
+  :focus {
+    color: ${(props) => props.theme.default.primaryColor};
+    background: ${(props) => props.theme.default.lightColor};
+  }
 `;
 
 const StyledSvg = styled.svg`
@@ -119,6 +111,5 @@ const StyledSvg = styled.svg`
   @media (max-width: 768px) {
     min-width: 100%;
     max-width: 100%;
-    max-height: 50vh;
   }
 `;
