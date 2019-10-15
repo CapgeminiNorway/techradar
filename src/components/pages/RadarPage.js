@@ -4,26 +4,30 @@ import TechList from '../TechList';
 import styled from 'styled-components';
 import { getConfirmedTech } from '../../redux/selectors/radar.selector';
 import { useSelector } from 'react-redux';
+import { motion } from "framer-motion"
 
 const RadarPage = () => {
   const confirmedTech = useSelector((state) => getConfirmedTech(state));
   const { currentRadarList } = useSelector((state) => state.radar);
 
   return (
-    <RadarPageWrapper>
-      <TechList />
+    <PageWrapper  initial="hidden"
+                  animate="visible">
+      <TechList/>
       <Radar currentRadarList={currentRadarList} techList={confirmedTech} />
-    </RadarPageWrapper>
+    </PageWrapper>
   );
 };
 
 export default RadarPage;
 
-const RadarPageWrapper = styled.div`
+export const PageWrapper = styled(motion.div)`
   display: flex;
   width: 100vw;
   flex-direction: row;
   height: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
   
   @media (max-width: 768px) {
     flex-direction: column-reverse;

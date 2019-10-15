@@ -17,7 +17,6 @@ export const MODAL_TYPES = {
 
 const Modal = ({
   size,
-  title,
   hideClose,
   bottom,
   rounded,
@@ -114,13 +113,12 @@ export const StyledModal = styled(SlideVerticalAnimation)`
   box-shadow: 5px 5px 500rem 500rem rgb(0, 0, 0, 0.5);
   position: fixed;
   overflow: hidden;
-  padding-bottom: 100px;
   bottom: 10vh;
   top: 10vh;
   left: calc(50% - 200px);
   width: 600px;
   z-index: 80;
-  border-radius: 3px;
+  border-radius: .5em;
   background: ${(props) => props.background || props.theme.default.backgroundColor};
   color: ${(props) => props.color || props.theme.default.lightColor};
   background: ${(props) => props.theme.default.primaryColor};
@@ -133,12 +131,11 @@ export const StyledModal = styled(SlideVerticalAnimation)`
   }
 
   @media (max-width: 768px) {
-    bottom: 0;
-    left: 0;
-    right: 0;
-    top: 0;
-    padding-bottom: 100px;
-    width: 100vw;
+    bottom: 75px;
+    left: 20px;
+    right: 20px;
+    top: 20px;
+    width: unset;
   }
 
   ${(props) =>

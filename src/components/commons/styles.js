@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import posed from 'react-pose';
+import { motion } from "framer-motion"
 
 export const tabletWidth = 700;
 
@@ -16,6 +16,11 @@ export const Col = styled.div`
   flex-direction: column;
 `;
 
+export const Grow = styled.div`
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+`;
 export const Padding = styled.div`
   padding: 1em;
 `;
@@ -29,7 +34,7 @@ export const AlignCenter = styled.div`
   align-items: center;
 `;
 
-export const CenterContainerCol = styled.div`
+export const CenterContainerCol = styled(motion.div)`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -44,37 +49,8 @@ export const CenterContainerCol = styled.div`
 export const defaultDelay = 50,
   defaultDuration = 300;
 
-export const AnimateCurrentTech = posed.div({
-  preEnter: {
-    scale: 0,
-    opacity: 0,
-    transition: ({ currentLen }) => ({
-      type: 'tween',
-      duration: defaultDuration * currentLen,
-      delay: currentLen * defaultDuration,
-      easing: 'easeInOut',
-    }),
-  },
-  enter: {
-    scale: 1,
-    opacity: 1,
-    transition: {
-      type: 'tween',
-      duration: defaultDuration * 2,
-      delay: defaultDuration * 2,
-      easing: 'easeInOut',
-    },
-  },
-  exit: {
-    scale: 0,
-    opacity: 0,
-    duration: defaultDuration,
-    transition: 'tween',
-    easing: 'easeInOut',
-  },
-});
 
-export const StyledAnimateCurrentTech = styled(AnimateCurrentTech)`
+export const StyledAnimateCurrentTech = styled.div`
   @media (max-width: 768px) {
     width: 100%;
   }

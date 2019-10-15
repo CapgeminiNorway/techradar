@@ -11,12 +11,13 @@ import { WhiteButton } from './pages/GenerateWordCloud';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleUserWarning, setModal } from '../redux/actions/gui.action';
 import { StyledAnimateCurrentTech } from './commons/styles';
-import { PoseGroup } from 'react-pose';
 import { useWindowSize } from '../custom-hooks';
 import { MODAL_TYPES } from './commons/Modal';
 import { setCurrentTech } from '../redux/actions/radar.action';
+import { opacityAnim } from "./TechList";
+import { motion } from "framer-motion"
 
-function Radar({ publicPage, techList, history }) {
+function Radar({ publicPage, techList }) {
   const { currentRadarList } = useSelector((state) => state.radar);
   const dispatch = useDispatch();
 
@@ -134,9 +135,8 @@ function Radar({ publicPage, techList, history }) {
 
   return (
     <>
-      <TechRadarWrapper id="radarParent" publicPage={!!publicPage}>
-        <PoseGroup animateOnMount preEnterPose="preEnter">
-          <StyledAnimateCurrentTech key="radar">
+      <TechRadarWrapper variants={opacityAnim} id="radarParent" publicPage={!!publicPage}>
+          <StyledAnimateCurrentTech>
             {!publicPage && (
               <TextWrapper>
                 <h1>Radar</h1>
@@ -162,7 +162,6 @@ function Radar({ publicPage, techList, history }) {
               perserveaspectratio="xMinYMid"
             />
           </StyledAnimateCurrentTech>
-        </PoseGroup>
       </TechRadarWrapper>
     </>
   );
@@ -174,7 +173,7 @@ const TextWrapper = styled.div`
   padding: 1em;
 `;
 
-const TechRadarWrapper = styled.div`
+const TechRadarWrapper = styled(motion.div)`
   width: ${(props) => (props.publicPage ? '100vw' : '80vw')};
 
   svg .radar-text-line {

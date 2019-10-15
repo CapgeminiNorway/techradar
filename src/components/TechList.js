@@ -1,26 +1,84 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { QUADRANTS } from '../App';
-import { getQuadrant, dynamicSortMultiple } from '../function.helper';
 import { useDebounce } from 'use-debounce';
 import { stylesTheme } from '../index';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentTech, toggleRadar, deleteRadar, silentlyConfirmTech } from '../redux/actions/radar.action';
-import { getConfirmedTech, getUnconfirmedTech } from '../redux/selectors/radar.selector';
-import { setModal } from '../redux/actions/gui.action';
 import Icon, { ICON_TYPES } from '../assets/icons/IconComponent';
-import { MODAL_TYPES } from './commons/Modal';
 import { WhiteButton } from './pages/GenerateWordCloud';
+import { motion } from "framer-motion"
+import SortBar from './SortBar';
+import { useWindowSize } from '../custom-hooks';
+import { ReactComponent as ChevronUpSvg} from "../assets/chevron-up.svg";
+
+export const techListAnim = {
+    hidden: { 
+      y: "100%",
+      transition: {
+        when: "afterChildren",
+      },
+    },
+    visible: { 
+      y: 0 ,
+      transition: {
+        when: "beforeChildren",
+        staggerChildren: 0.3,
+        duration: 1, 
+        ease: "easeOut", 
+        delay: 1
+      },
+    },
+}
+
+export const techItemAnim = {
+  visible: i => ({
+    opacity: 1, 
+    x: 0, 
+    transition: {
+      when: "beforeChildren",
+      duration: 1, 
+      ease: "easeOut", 
+      delay: 1 + i * 0.3
+    },
+  }),
+  hidden: { 
+    opacity: 0, 
+    x: -100 
+  },
+}
+export const opacityAnim = {
+    visible: {
+      opacity: 1, 
+      transition: {
+        duration: 1, 
+        ease: "easeOut", 
+        delay: 3
+      },
+    },
+    hidden: { 
+      opacity: 0, 
+    },
+}
 
 function TechList({ handleClick, multiList }) {
   const dispatch = useDispatch();
-  const { currentRadarList, allRadars } = useSelector((state) => state.radar);
-  const unconfirmedTech = useSelector((state) => getUnconfirmedTech(state));
-  const confirmedTech = useSelector((state) => getConfirmedTech(state));
+  const { currentRadarList, allRadars, techList } = useSelector((state) => state.radar);
   const currentUser = useSelector((state) => state.user.currentUser);
   const isAdmin = currentUser && currentUser.isAdmin;
   const [debounceTech, setDebounceTech] = useState(null);
   const [tech] = useDebounce(debounceTech, 100);
+  const windowSize = useWindowSize();
+
+
+  const [ unconfirmedTech, confirmedTech ] = React.useMemo( () => {
+    let _unc = [], _c = [];
+    techList.forEach( tech => {
+      if (tech.confirmed) _c.push(tech);
+      else _unc.push(tech);
+    })
+    return [_unc, _c];
+
+  }, [techList]);
 
   const dispatchConfirmAll = () => dispatch(silentlyConfirmTech(unconfirmedTech));
 
@@ -40,6 +98,8 @@ function TechList({ handleClick, multiList }) {
       if (!radar) return null;
       return (
         <TechListItem
+          variants={techItemAnim}
+          custom={i}
           key={radar.id}
           focusable
           color={stylesTheme.default.lightColor}
@@ -62,9 +122,17 @@ function TechList({ handleClick, multiList }) {
       );
     });
   };
+  
+  const [fullSize, toggleFullsize] = React.useState(false);
 
   return (
-    <StyledTechList tabIndex={0}>
+    <StyledTechList fullSize={fullSize} tabIndex={0} initial="hidden"
+    animate="visible" variants={techListAnim}
+    >
+      { windowSize.width < 768 && 
+      <ToggleHeight fullSize={fullSize}  onClick={() => toggleFullsize(!fullSize)}>
+        <ChevronUpSvg />
+      </ToggleHeight>}
       <TechListWrapper>
         <h5>All radars:</h5> {renderRadarList(allRadars)}
       </TechListWrapper>
@@ -118,127 +186,59 @@ function TechList({ handleClick, multiList }) {
 
 export default TechList;
 
-const SortBar = ({ list, handleClick, multiList }) => {
-  const dispatch = useDispatch();
-  const { currentTech } = useSelector((state) => state.radar);
 
-  const [ searchString, setSearchString ] = React.useState("");
- 
-  const QUADRANT = 'quadrant',
-    RING = 'ring',
-    NAME = 'name';
+const StyledTechList = styled(motion.ol)`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background: ${(props) => props.theme.default.primaryColor};
+  min-width: 300px;
+  max-width: 300px;
+  overflow-y: auto;
+  height: 100%;
+  position: relative;
 
-  const [currentFilters, setCurrentFilters] = useState([QUADRANT, RING, NAME]);
-
-  const handleSelectTech = (_tech) => {
-    if (handleClick) {
-      handleClick(_tech);
-    } else {
-      dispatch(setCurrentTech(_tech))
-      dispatch(setModal(MODAL_TYPES.TECH_FORM));
-    }
-  };
-
-  const getIsCurrent = (tech) => {
-    if (multiList) {
-      return multiList.indexOf(tech) !== -1;
-    } else {
-      return currentTech && currentTech.id === tech.id;
-    }
-  };
-
-  const renderTechList = (_techList) => {
-    return _techList.map((tech, i) => {
-      if (!tech) return null;
-      return (
-        <TechListItem
-          key={tech.id}
-          focusable
-          color={stylesTheme.default.lightColor}
-          backgroundColor={QUADRANTS[getQuadrant(tech.quadrant)].color}
-          tabIndex={0}
-          current={getIsCurrent(tech, i)}
-          onClick={() => handleSelectTech(tech)}>
-          {tech.name} <RingLabel>{tech.ring}</RingLabel>
-        </TechListItem>
-      );
-    });
-  };
-
-  const setFilter = (filter) => {
-    const i = currentFilters.indexOf(filter);
-    if (i > 0) {
-      currentFilters.splice(i, 1);
-      currentFilters.unshift(filter);
-      setCurrentFilters([...currentFilters]);
-    }
-  };
-
-  const handleSearch = (e) => {
-    setSearchString(e.target.value);
+  h5 {
+    margin: 0 .5em;
   }
 
-  const returnSearch = (_techList) => {
-    if (!searchString.length) return _techList;
-    return _techList.filter(t => t.name.includes(searchString));
-  };
+  @media (max-width: 768px) {
+    min-width: 100vw;
+    max-width: 100vw;
+    padding: 1em;
+    padding-bottom: 5em;
+    transition: min-height 500ms ease-out, max-height 500ms ease-out;
 
-  const returnSort = (_techList) => {
-    return _techList.sort(dynamicSortMultiple(currentFilters[0], currentFilters[1]));
-  };
-
-  return (
-    <>
-      <StyledFilterBar>
-        <label>Sort:</label>
-        <div>
-          <FilterButton setFilter={setFilter} buttonString={currentFilters[0]} current />
-          <FilterButton setFilter={setFilter} buttonString={currentFilters[1]} current />
-          <FilterButton setFilter={setFilter} buttonString={currentFilters[2]} />
-        </div>
-      </StyledFilterBar>
-      <StyledFilterBar>
-        <label>Search:</label>
-        <div>
-        <SortInput placeholder="technology search ..." onChange={handleSearch} />
-        </div>
-      </StyledFilterBar>
-      {renderTechList(returnSearch(returnSort(list)))}
-    </>
-  );
-};
-
-const FilterButton = ({ setFilter, buttonString, current }) => {
-  const StyledFilterButton = styled.button`
-    background: ${(props) =>
-      props.current ? props.theme.default.lightColor : props.theme.default.opaqueWhite};
-    color: ${(props) =>
-      props.current ? props.theme.default.fontColor : props.theme.default.lightColor};
-  `;
-  return (
-    <StyledFilterButton
-      key={buttonString}
-      onClick={() => setFilter(buttonString)}
-      current={current}>
-      {buttonString}
-    </StyledFilterButton>
-  );
-};
-
-const SortInput = styled.input`
-  width: 90%;
-  background: transparent;
-  border: none;
-  border-bottom: 3px solid white;
-  color: white;
-  padding: 4px 6px;
-  margin: 10px;
-  
-  ::placeholder {
-    color: rgba(255,255,255,0.5);
+    ${ props => props.fullSize ? `
+    
+    min-height: 100vh;
+    max-height: 100vh;
+    ` : `
+    
+    min-height: 40vh;
+    max-height: 40vh;
+    `};
   }
 `;
 
+const ToggleHeight = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    ${props => props.fullSize && `
+      transform: rotate(180deg);
+    `};
+    width: 10px;
+    height: 10px;
+  }
+`;
 const ConfirmAllWrapper = styled.div`
 width: 100%;
 display: flex;
@@ -254,68 +254,6 @@ button {
 }
 
 `;
-const StyledTechList = styled.ol`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  background: ${(props) => props.theme.default.primaryColor};
-  min-width: 300px;
-  max-width: 300px;
-  overflow-y: auto;
-  height: 95vh;
-
-  h5 {
-    margin: 1em 0;
-    padding-left: 0.5em;
-  }
-
-  @media (max-width: 768px) {
-    min-width: 100%;
-    max-width: 100%;
-    padding: 1em;
-    padding-bottom: 5em;
-    height: unset;
-  }
-`;
-
-const RingLabel = styled.label`
-  background: ${(props) => props.theme.default.lightColor};
-  color: ${(props) => props.theme.default.fontColor};
-  border-radius: 3px;
-  margin: 0 5px;
-  width: 50px;
-  text-align: center;
-  padding: 3px 5px;
-  position: absolute;
-  top: 10%;
-  right: 1%;
-`;
-
-const StyledFilterBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 1em 0;
-  label {
-    padding: 0.2em;
-
-    @media (max-width: 768px) {
-      margin: 0.5em 0;
-    }
-  }
-  button {
-    padding: 0.5em;
-    width: 70px;
-    border-radius: 3px;
-    margin-left: 3px;
-
-    @media (max-width: 768px) {
-      padding: 0.5em;
-      margin: 0.5em 0;
-    }
-  }
-`;
-
 const TechListWrapper = styled.div`
   margin-bottom: 1em;
 `;
@@ -333,9 +271,9 @@ const DeleteButton = styled.span`
   border-radius: 50%;
 `;
 
-const TechListItem = styled.li`
+export const TechListItem = styled(motion.li)`
   position: relative;
-  padding: 5px 20px 5px 5px;
+  padding: .5em 2em .5em .5em;
   text-align: left;
   background: ${(props) => props.backgroundColor};
   color: ${(props) => props.color};
