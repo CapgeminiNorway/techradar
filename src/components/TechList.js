@@ -9,76 +9,68 @@ import { WhiteButton } from './pages/GenerateWordCloud';
 import { motion } from "framer-motion"
 import SortBar from './SortBar';
 import { useWindowSize } from '../custom-hooks';
-import { ReactComponent as ChevronUpSvg} from "../assets/chevron-up.svg";
+import { ReactComponent as ChevronUpSvg } from "../assets/chevron-up.svg";
+import { getUnconfirmedTech, getConfirmedTech } from '../redux/selectors/radar.selector';
 
 export const techListAnim = {
-    hidden: { 
-      y: "100%",
-      transition: {
-        when: "afterChildren",
-      },
+  hidden: {
+    y: "100%",
+    transition: {
+      when: "afterChildren",
     },
-    visible: { 
-      y: 0 ,
-      transition: {
-        when: "beforeChildren",
-        staggerChildren: 0.3,
-        duration: 1, 
-        ease: "easeOut", 
-        delay: 1
-      },
+  },
+  visible: {
+    y: 0,
+    transition: {
+      when: "beforeChildren",
+      duration: 1,
+      ease: "easeOut",
+      delay: 1
     },
+  },
 }
 
 export const techItemAnim = {
   visible: i => ({
-    opacity: 1, 
-    x: 0, 
+    opacity: 1,
+    x: 0,
     transition: {
       when: "beforeChildren",
-      duration: 1, 
-      ease: "easeOut", 
+      duration: 1,
+      ease: "easeOut",
       delay: 1 + i * 0.3
     },
   }),
-  hidden: { 
-    opacity: 0, 
-    x: -100 
+  hidden: {
+    opacity: 0,
+    x: -100
   },
 }
 export const opacityAnim = {
-    visible: {
-      opacity: 1, 
-      transition: {
-        duration: 1, 
-        ease: "easeOut", 
-        delay: 3
-      },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 1,
+      ease: "easeOut",
+      delay: 3
     },
-    hidden: { 
-      opacity: 0, 
-    },
+  },
+  hidden: {
+    opacity: 0,
+  },
 }
 
 function TechList({ handleClick, multiList }) {
   const dispatch = useDispatch();
-  const { currentRadarList, allRadars, techList } = useSelector((state) => state.radar);
+  const { currentRadarList, allRadars } = useSelector((state) => state.radar);
   const currentUser = useSelector((state) => state.user.currentUser);
   const isAdmin = currentUser && currentUser.isAdmin;
   const [debounceTech, setDebounceTech] = useState(null);
   const [tech] = useDebounce(debounceTech, 100);
   const windowSize = useWindowSize();
+  const unconfirmedTech = useSelector(state => getUnconfirmedTech(state));
+  const confirmedTech = useSelector(state => getConfirmedTech(state));
 
-
-  const [ unconfirmedTech, confirmedTech ] = React.useMemo( () => {
-    let _unc = [], _c = [];
-    techList.forEach( tech => {
-      if (tech.confirmed) _c.push(tech);
-      else _unc.push(tech);
-    })
-    return [_unc, _c];
-
-  }, [techList]);
 
   const dispatchConfirmAll = () => dispatch(silentlyConfirmTech(unconfirmedTech));
 
@@ -122,17 +114,17 @@ function TechList({ handleClick, multiList }) {
       );
     });
   };
-  
+
   const [fullSize, toggleFullsize] = React.useState(false);
 
   return (
     <StyledTechList fullSize={fullSize} tabIndex={0} initial="hidden"
-    animate="visible" variants={techListAnim}
+      animate="visible" variants={techListAnim}
     >
-      { windowSize.width < 768 && 
-      <ToggleHeight fullSize={fullSize}  onClick={() => toggleFullsize(!fullSize)}>
-        <ChevronUpSvg />
-      </ToggleHeight>}
+      {windowSize.width < 768 &&
+        <ToggleHeight fullSize={fullSize} onClick={() => toggleFullsize(!fullSize)}>
+          <ChevronUpSvg />
+        </ToggleHeight>}
       <TechListWrapper>
         <h5>All radars:</h5> {renderRadarList(allRadars)}
       </TechListWrapper>

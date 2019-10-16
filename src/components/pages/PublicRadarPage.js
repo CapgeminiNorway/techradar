@@ -4,7 +4,7 @@ import { API } from 'aws-amplify';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { dynamicSort } from '../../function.helper';
-import { NavIcon, StyledNavBar } from '../commons/NavigationBar';
+import { NavIcon, StyledNavBar, RouteButton } from '../commons/NavigationBar';
 import { Route, Switch } from 'react-router-dom';
 
 /**
@@ -119,12 +119,14 @@ const PublicRadarPage = ({ history, match }) => {
       <StyledNavBar>
         <NavIcon onClick={() => handleRoute('/')}>Tech Radar</NavIcon>
         <div>
-          {(currentRadar || error) && <button onClick={() => handleRoute('/')}>Back</button>}
-          <button onClick={() => handleRoute('/edit/')}>Capgemini employee? Login here</button>
+          {(currentRadar || error) && <RouteButton onClick={() => handleRoute('/')}>Back</RouteButton>}
+          <RouteButton onClick={() => handleRoute('/edit/')}>Log in</RouteButton>
         </div>
       </StyledNavBar>
 
+      <ContentWrapper>
       {renderPublicPage()}
+      </ContentWrapper>
     </PublicWrapper>
   );
 };
@@ -136,6 +138,20 @@ const ErrorWrapper = styled.div`
   color: ${(props) => props.theme.default.lightColor};
 `;
 
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  @media (max-width: 768px) {
+    #radarParent,
+    #radar {
+      margin-top: 20px;
+      width: 100vw;
+    }
+  }
+
+`
 const SpinnerContainer = styled.div`
   padding: 20vh 0;
 `;

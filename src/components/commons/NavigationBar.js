@@ -121,7 +121,7 @@ export const NavIcon = styled.div`
 
 `;
 
-const RouteButton = styled.button`
+export const RouteButton = styled.button`
     background: transparent;
     color: white;
     border-bottom: 3px solid white;
