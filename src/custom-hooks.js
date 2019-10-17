@@ -29,6 +29,7 @@ export function useWindowSize() {
     return {
       width: isClient ? window.innerWidth : undefined,
       height: isClient ? window.innerHeight : undefined,
+      isMobile: 768 > window.innerWidth
     };
   }, [isClient]);
 

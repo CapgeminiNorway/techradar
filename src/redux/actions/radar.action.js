@@ -158,6 +158,7 @@ export const deleteTech = (tech) => async (dispatch, getState) => {
     await API.graphql(graphqlOperation(m.deleteTech, { input: { id: tech.id } }));
     dispatch(toggleUserWarning(`Deleted Technology: ${tech.name}`));
     dispatch({ type: types.SET_CURRENT_TECH, payload: null });
+    dispatch(setModal(null));
   } catch (err) {
     dispatch(toggleUserWarning('Network error!'));
   }

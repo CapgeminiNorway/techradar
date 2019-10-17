@@ -11,7 +11,8 @@ const TechForm = () => {
   const isAdmin = currentUser && currentUser.isAdmin; 
 
   const deleteCurrentTech = () => dispatch(deleteTech(currentTech));
-
+  const canDeleteTech = (currentTech && currentTech.id) && (currentUser.username === currentTech.owner || isAdmin);
+  
   const [techForm, setTechForm] = React.useState({
     id: currentTech ? currentTech.id : null,
     confirmed: false,
@@ -246,7 +247,7 @@ const TechForm = () => {
       </TechFormInput>
 
       <TechFormInput xstart={5} xend={9} yStart={4} yEnd={4}>
-        {isAdmin && currentTech && currentTech.id && (
+        {canDeleteTech && (
           <RemoveButton onClick={deleteCurrentTech} type="button">
             Delete
           </RemoveButton>

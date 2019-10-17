@@ -61,7 +61,7 @@ const RadarForm = () => {
 
     try {
       const radarResponse = await dispatch(addRadar({
-        id: radarForm.isPublic ? cop : radarForm.id,
+        id: radarForm.isPublic ? publicName : radarForm.id,
         description: radarForm.description,
         isPublic: radarForm.isPublic
       }));

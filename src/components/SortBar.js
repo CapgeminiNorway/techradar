@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentTech } from '../redux/actions/radar.action';
 import { setModal } from '../redux/actions/gui.action';
 import { MODAL_TYPES } from './commons/Modal';
-import { techItemAnim, TechListItem } from './TechList';
+import {  TechListItem } from './TechList';
 import { Grow } from './commons/styles';
 
 const SortBar = ({ list, handleClick, multiList }) => {
@@ -44,8 +44,6 @@ const SortBar = ({ list, handleClick, multiList }) => {
       if (!tech) return null;
       return (
         <TechListItem
-          variants={techItemAnim}
-          custom={i}
           key={tech.id}
           focusable
           color={stylesTheme.default.lightColor}

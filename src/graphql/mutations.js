@@ -1,4 +1,4 @@
-// eslint-disable
+/* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
 export const createTech = `mutation CreateTech($input: CreateTechInput!) {
@@ -12,7 +12,6 @@ export const createTech = `mutation CreateTech($input: CreateTechInput!) {
     radar {
       id
       description
-      prevRadarUrl
       isPublic
       owner
       techList {
@@ -37,7 +36,6 @@ export const updateTech = `mutation UpdateTech($input: UpdateTechInput!) {
     radar {
       id
       description
-      prevRadarUrl
       isPublic
       owner
       techList {
@@ -62,7 +60,6 @@ export const deleteTech = `mutation DeleteTech($input: DeleteTechInput!) {
     radar {
       id
       description
-      prevRadarUrl
       isPublic
       owner
       techList {
@@ -80,7 +77,6 @@ export const createRadar = `mutation CreateRadar($input: CreateRadarInput!) {
   createRadar(input: $input) {
     id
     description
-    prevRadarUrl
     isPublic
     owner
     techList {
@@ -105,7 +101,6 @@ export const updateRadar = `mutation UpdateRadar($input: UpdateRadarInput!) {
   updateRadar(input: $input) {
     id
     description
-    prevRadarUrl
     isPublic
     owner
     techList {
@@ -130,7 +125,6 @@ export const deleteRadar = `mutation DeleteRadar($input: DeleteRadarInput!) {
   deleteRadar(input: $input) {
     id
     description
-    prevRadarUrl
     isPublic
     owner
     techList {

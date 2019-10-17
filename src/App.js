@@ -6,7 +6,6 @@ import { withAuthenticator } from 'aws-amplify-react';
 import Amplify from 'aws-amplify';
 import { Route } from 'react-router-dom';
 import RadarPage from './components/pages/RadarPage';
-import WordCloudPage from './components/pages/GenerateWordCloud';
 import { useAlert } from 'react-alert';
 import AuthTheme from './amplifyAuthStyles';
 import NavigationBar from './components/commons/NavigationBar';
@@ -93,7 +92,6 @@ const App = () => {
 
     <ContentWrapper>
       <Route exact path="/edit" component={RadarPage} />
-      <Route path="/edit/word-cloud" component={WordCloudPage} />
       </ContentWrapper>
     </AppMainStyles>
   );
@@ -106,6 +104,7 @@ export default withAuthenticator(App, false, [], null, AuthTheme, {
 
 const ContentWrapper = styled.div`
   height: 95vh;
+
 `;
 const AppMainStyles = styled.div`
   overflow: hidden;

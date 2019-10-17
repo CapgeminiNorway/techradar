@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { motion } from "framer-motion"
 
 export const tabletWidth = 700;
 
@@ -34,7 +33,7 @@ export const AlignCenter = styled.div`
   align-items: center;
 `;
 
-export const CenterContainerCol = styled(motion.div)`
+export const CenterContainerCol = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -53,5 +52,7 @@ export const defaultDelay = 50,
 export const StyledAnimateCurrentTech = styled.div`
   @media (max-width: 768px) {
     width: 100%;
+    height: 100%;
+
   }
 `;

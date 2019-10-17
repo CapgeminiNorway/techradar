@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useWindowSize } from '../../helper';
+import { useWindowSize, downloadSVG } from '../../helper';
 import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setModal } from '../../redux/actions/gui.action';
+import { setModal, toggleUserWarning } from '../../redux/actions/gui.action';
 import { signOut } from '../../redux/actions/user.action';
 import { MODAL_TYPES } from './Modal';
 import { ReactComponent as AboutSvg } from "../../assets/menu/info.svg";
@@ -11,13 +11,32 @@ import { ReactComponent as UsersSvg } from "../../assets/menu/users.svg";
 import { ReactComponent as RadarSvg } from "../../assets/menu/radar.svg";
 import { ReactComponent as LogoutSvg } from "../../assets/menu/logout.svg";
 import { ReactComponent as AddSvg } from "../../assets/menu/add.svg";
+import { convertJsonToExcel } from '../../function.helper';
 
 const NavigationBar = withRouter(({ history }) => {
   const windowSize = useWindowSize();
+  const { currentRadarList, techList } = useSelector((state) => state.radar);
 
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const { ModalComponent } = useSelector((state) => state.gui);
+
+  
+  const downloadRadarSvg = () => {
+    if (!currentRadarList.length) {
+      dispatch(toggleUserWarning('Pick a radar with technology to download'));
+    } else {
+      downloadSVG('radar', `${currentRadarList[0].id}-Radar.svg`);
+    }
+  };
+
+  const downloadCSV = () => {
+    if (!currentRadarList.length) {
+      dispatch(toggleUserWarning('Pick a radar with technology to download'));
+    } else {
+      convertJsonToExcel(techList, currentRadarList[0].id);
+    }
+  };
 
   const openAddTechModal = () => {
 
@@ -34,13 +53,13 @@ const NavigationBar = withRouter(({ history }) => {
     else dispatch(setModal(MODAL_TYPES.ABOUT));
   };
 
-  const toRadar = () => {
-    history.push('/edit/');
-  };
+  // const toRadar = () => {
+  //   history.push('/edit/');
+  // };
 
-  const toWordCloud = () => {
-    history.push('/edit/word-cloud');
-  };
+  // const toWordCloud = () => {
+  //   history.push('/edit/word-cloud');
+  // };
 
   const toUserManagement = () => {
     if (ModalComponent === MODAL_TYPES.USER_MANAGEMENT) dispatch(setModal(null));
@@ -53,14 +72,12 @@ const NavigationBar = withRouter(({ history }) => {
         <NavIcon onClick={() => history.push('/')}>Tech Radar</NavIcon>
         <DesktopWrapper>
           <div>
-            <RouteButton onClick={toRadar}>> Radar</RouteButton>
-            <RouteButton onClick={toWordCloud}>> Word Cloud</RouteButton>
-          </div>
-          <div>
             <button onClick={openAddTechModal}>Add Tech</button>
             {currentUser && currentUser.isAdmin && <button onClick={openManageRadar}>Add radar</button>}
             {currentUser && currentUser.isAdmin && <button onClick={toUserManagement}>User management</button>}
             <button onClick={openAbout}>About</button>
+            <button onClick={downloadRadarSvg}>Download SVG</button>
+            <button onClick={downloadCSV}>Download CSV</button>
             <button onClick={() => dispatch(signOut())}>Sign out</button>
           </div>
         </DesktopWrapper>
@@ -71,10 +88,6 @@ const NavigationBar = withRouter(({ history }) => {
       <>
         <StyledNavBar>
           <NavIcon onClick={() => history.push('/')}>Tech Radar</NavIcon>
-          <div>
-            <RouteButton onClick={toRadar}>> Radar</RouteButton>
-            <RouteButton onClick={toWordCloud}>> Word Cloud</RouteButton>
-          </div>
         </StyledNavBar>
         <MobileNavWrapper>
           <MobileButton current={ModalComponent === MODAL_TYPES.ABOUT} onClick={openAbout}><AboutSvg/></MobileButton>
@@ -127,7 +140,6 @@ export const RouteButton = styled.button`
     border-bottom: 3px solid white;
     margin: 0 5px;
     font-weight: 600;
-    font-size: 18px;
     padding: 0 6px 0 0;
     text-align: center;
     cursor: pointer;
@@ -158,13 +170,12 @@ const MobileNavWrapper = styled.nav`
 `;
 
 export const DesktopWrapper = styled.div`
-
   width: calc(100% - 300px);
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 
   
-  >div:last-child button {
+  button {
     padding: 8px 12px;
     border-radius: 3px;
     font-weight: 600;

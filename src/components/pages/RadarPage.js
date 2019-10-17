@@ -4,7 +4,6 @@ import TechList from '../TechList';
 import styled from 'styled-components';
 import { getConfirmedTech } from '../../redux/selectors/radar.selector';
 import { useSelector } from 'react-redux';
-import { motion } from "framer-motion"
 
 const RadarPage = () => {
   const confirmedTech = useSelector((state) => getConfirmedTech(state));
@@ -14,14 +13,29 @@ const RadarPage = () => {
     <PageWrapper  initial="hidden"
                   animate="visible">
       <TechList/>
-      <Radar currentRadarList={currentRadarList} techList={confirmedTech} />
+      <Wrapper>
+        <Radar currentRadarList={currentRadarList} techList={confirmedTech} />
+      </Wrapper>
     </PageWrapper>
   );
 };
 
 export default RadarPage;
 
-export const PageWrapper = styled(motion.div)`
+export const Wrapper = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 3em 2em;
+@media (max-width: 768px) {
+    align-items: center;
+    justify-content: center;
+    padding: 1em 0;
+}
+`;
+export const PageWrapper = styled.div`
   display: flex;
   width: 100vw;
   flex-direction: row;
@@ -35,6 +49,7 @@ export const PageWrapper = styled(motion.div)`
     #radarParent,
     #radar {
       width: 100vw;
+      height: 100%;
     }
   }
 `;
