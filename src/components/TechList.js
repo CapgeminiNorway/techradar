@@ -5,7 +5,6 @@ import { stylesTheme } from '../index';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentTech, toggleRadar, deleteRadar, silentlyConfirmTech } from '../redux/actions/radar.action';
 import Icon, { ICON_TYPES } from '../assets/icons/IconComponent';
-import { WhiteButton } from './pages/GenerateWordCloud';
 import { motion } from "framer-motion"
 import SortBar from './SortBar';
 import { useWindowSize } from '../custom-hooks';
@@ -130,11 +129,7 @@ function TechList({ handleClick, multiList }) {
         {
           !!unconfirmedTech.length ?
             <>
-              {!!(currentUser && currentUser.isAdmin) &&
-                <ConfirmAllWrapper>
-                  <WhiteButton onClick={dispatchConfirmAll}>Confirm all</WhiteButton>
-                </ConfirmAllWrapper>
-              }
+              
 
               <SortBar
                 list={unconfirmedTech}
@@ -142,13 +137,15 @@ function TechList({ handleClick, multiList }) {
                 handleClick={handleClick}
                 setDebounceTech={setDebounceTech}
               />
+              {!!(currentUser && currentUser.isAdmin) &&
+                <ConfirmAllWrapper>
+                  <button onClick={dispatchConfirmAll}>Confirm all technology</button>
+                </ConfirmAllWrapper>
+              }
             </>
             :
             <TechListItem>No technology in selected radars</TechListItem>
         }
-
-
-
       </TechListWrapper>
       }
     </StyledTechList>
@@ -213,14 +210,17 @@ const ToggleHeight = styled.div`
   }
 `;
 const ConfirmAllWrapper = styled.div`
-width: 100%;
 display: flex;
 justify-content: center;
 align-items: center;
-padding: 0 10px;
+padding: 10px;
+margin: 10px 0;
 
 button {
-  width: 100%;
+  background: none;
+  color: white;
+  font-weight: 600;
+  text-decoration: underline;
   :hover {
     background: white;
   }

@@ -114,36 +114,6 @@ const TechForm = () => {
         />
       </TechFormInput>
 
-      <TechFormInput xstart={5} xend={9} yStart={2} yEnd={2}>
-        <h5>Changes since last radar</h5>
-        <ButtonSelector>
-          <button
-            onClick={(e) => handleButtonClick(e, 'moved')}
-            name="same"
-            type="button"
-            className={techForm.moved === 'same' ? 'current' : ''}
-            value="same">
-            ● No change
-          </button>
-          <button
-            onClick={(e) => handleButtonClick(e, 'moved')}
-            name="up"
-            type="button"
-            className={techForm.moved === 'up' ? 'current' : ''}
-            value="up">
-            ▲ moved up
-          </button>
-          <button
-            onClick={(e) => handleButtonClick(e, 'moved')}
-            name="down"
-            type="button"
-            className={techForm.moved === 'down' ? 'current' : ''}
-            value="down">
-            ▼ moved down
-          </button>
-        </ButtonSelector>
-      </TechFormInput>
-
       <TechFormInput xstart={1} xend={5} yStart={3} yEnd={3}>
         <h5>Quadrant</h5>
         <ButtonSelector>
@@ -253,7 +223,7 @@ const TechForm = () => {
           </RemoveButton>
         )}
         <SubmitButton _disabled={!enableSubmit} type="submit">
-          {currentTech ? 'Update' : 'Submit'}
+          {currentTech ? isAdmin ? 'Confirm' : 'Update' : 'Submit'}
         </SubmitButton>
       </TechFormInput>
     </AddTechForm>

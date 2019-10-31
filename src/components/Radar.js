@@ -85,7 +85,7 @@ function Radar({ publicPage, techList }) {
       ringText: 'rgba(255,255,255,0.5)',
       colors: {
         background: '#282c34',
-        grid: '#bbb',
+        grid: 'white',
         inactive: '#ddd',
       },
       title: '',
@@ -133,7 +133,9 @@ export default withRouter(memo(Radar));
 const TechRadarWrapper = styled.div`
     
   width: ${(props) => (props.publicPage ? '100vw' : '80vw')};
-
+  display: flex;
+    align-items: center;
+    justify-content: center;
   svg .radar-text-line {
     padding: 4px;
     

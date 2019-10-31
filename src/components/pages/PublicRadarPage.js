@@ -23,11 +23,8 @@ const PublicRadarPage = ({ history, match }) => {
       if (match.params.radarId) {
         for (let i = 0; i < res.length; i++) {
           if (res[i].id === match.params.radarId) return setCurrentRadar(res[i]);
-          else {
-            setError(`No radar with name ${match.params.radarId}`);
-          }
         }
-      }
+      } 
       setPublicRadars(res);
       console.log(res);
     } catch (err) {
@@ -177,6 +174,7 @@ const PublicRadarButton = styled.button`
   border-radius: 10px;
   border: 3px solid ${(props) => props.theme.default.lightColor};
   max-height: 30vh;
+  height: 200px;
 
   :hover {
     background: ${(props) => props.theme.default.lightColor};

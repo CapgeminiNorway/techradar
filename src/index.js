@@ -28,14 +28,14 @@ const alertBoxConfig = {
 
 export const stylesTheme = {
   default: {
-    primaryColor: '#0071ae', // 2B0B3D
+    primaryColor: '#00517c', // 2B0B3D
     secondaryColor: '#09ACDC',
     backgroundColor: '#282c34',
     fontColor: 'black',
     lightColor: 'white',
     grayColor: '#ddd',
     opaqueWhite: 'rgba(255,255,255,0.3)',
-    negativeColor: 'red',
+    negativeColor: '#ff3e3e',
     secondaryNegativeColor: 'darkred',
   },
 };

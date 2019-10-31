@@ -51,7 +51,6 @@ export function radar_visualization(config) {
 
   const rings = [{ radius: 140 }, { radius: 220 }, { radius: 310 }, { radius: 400 }];
   const title_offset = { x: -675, y: -420 };
-  const footer_offset = { x: -425, y: 480 };
 
   const legend_offset = [
     { x: 450, y: 90 },
@@ -201,7 +200,7 @@ export function radar_visualization(config) {
     .attr('x2', 0)
     .attr('y2', 400)
     .style('stroke', config.colors.grid)
-    .style('stroke-width', 1);
+    .style('stroke-width', 2);
   grid
     .append('line')
     .attr('x1', -400)
@@ -209,7 +208,7 @@ export function radar_visualization(config) {
     .attr('x2', 400)
     .attr('y2', 0)
     .style('stroke', config.colors.grid)
-    .style('stroke-width', 1);
+    .style('stroke-width', 2);
 
   // background color. Usage `.attr("filter", "url(#solid)")`
   // SOURCE: https://stackoverflow.com/a/31013492/2609980
@@ -231,9 +230,9 @@ export function radar_visualization(config) {
       .attr('cx', 0)
       .attr('cy', 0)
       .attr('r', rings[i].radius)
-      .style('fill', 'none')
-      .style('stroke', config.colors.grid)
-      .style('stroke-width', 1);
+      .style('fill', 'rgba(255,255,255,0.1)') // TODO: here
+      .style('stroke', config.colors.grid) 
+      .style('stroke-width', 2);
     if (config.print_layout) {
       grid
         .append('text')
@@ -269,15 +268,15 @@ export function radar_visualization(config) {
       .style('font-size', '34')
       .style('fill', config.textColor);
 
-    // footer
-    radar
-      .append('text')
-      .attr('transform', translate(footer_offset.x, footer_offset.y))
-      .text('▲ moved up     ▼ moved down')
-      .attr('xml:space', 'preserve')
-      .style('font-family', 'Arial, Helvetica')
-      .style('font-size', '22')
-      .style('fill', config.textColor);
+    // // footer
+    // radar
+    //   .append('text')
+    //   .attr('transform', translate(footer_offset.x, footer_offset.y))
+    //   .text('▲ moved up     ▼ moved down')
+    //   .attr('xml:space', 'preserve')
+    //   .style('font-family', 'Arial, Helvetica')
+    //   .style('font-size', '22')
+    //   .style('fill', config.textColor);
 
     // legend
     let legend = radar.append('g');
@@ -401,6 +400,7 @@ export function radar_visualization(config) {
     .attr('transform', function(d, i) {
       return legend_transform(d.quadrant, d.ring, i);
     })
+    
     .on('click', config.handleBubbleClick)
     .on('mouseover', function(d) {
       showBubble(d);
@@ -411,9 +411,12 @@ export function radar_visualization(config) {
       unhighlightLegendItem(d);
     });
 
+
   // configure each blip
-  blips.each(function(d) {
+  blips.each(function(d, i) {
     let blip = d3.select(this);
+
+    
 
     // blip link
     if (!config.print_layout && d.active && d.hasOwnProperty('link')) {
