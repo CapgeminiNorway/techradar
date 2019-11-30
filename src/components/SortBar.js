@@ -51,7 +51,10 @@ const SortBar = ({ list, handleClick, multiList }) => {
           tabIndex={0}
           current={getIsCurrent(tech, i)}
           onClick={() => handleSelectTech(tech)}>
-          {tech.name} <RingLabel>{tech.ring}</RingLabel>
+          <b>{tech.name}</b>
+          <p>{tech.radarId}</p>
+          
+           <RingLabel>{tech.ring}</RingLabel>
         </TechListItem>
       );
     });

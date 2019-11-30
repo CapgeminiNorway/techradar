@@ -19,6 +19,7 @@
     "d3": "^5.9.2",
     "exceljs": "^1.7.0",
     "framer-motion": "^1.6.14",
+    "immer": "^5.0.0",
     "logrocket": "^0.6.21",
     "logrocket-react": "^3.0.0",
     "react": "^16.8.1",

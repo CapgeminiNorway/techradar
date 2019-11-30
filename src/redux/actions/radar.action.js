@@ -232,18 +232,27 @@ export const addRadar = (radarForm) => async (dispatch) => {
     const radar = await API.graphql(graphqlOperation(m.createRadar, { input: newRadar }));
     dispatch(toggleUserWarning(`Created radar ${newRadar.id}`));
     dispatch({type: types.SET_CURRENT_RADAR, payload: []});
-    dispatch({type: types.SET_CURRENT_TECH, payload: []})
+    dispatch({type: types.SET_TECH_LIST, payload: []});
     return radar;
   } catch (err) {
     dispatch(toggleUserWarning(getNetworkErrMsg(err)));
   }
 };
 
+// Add all current selected technology to a radar without duplicates
 export const updateTechRadar = (newRadar) => async (dispatch, getState) => {
   const { techList } = getState().radar;
 
+  // Remove all duplicated names when mergin in new radar
+  const uniqueList = techList.reduce((unique, o) => {
+    if(!unique.some(obj => obj.name === o.name)) {
+      unique.push(o);
+    }
+    return unique;
+},[]);
+
   try {
-    techList.map(async (tech) => {
+    uniqueList.map(async (tech) => {
       await API.graphql(
         graphqlOperation(m.createTech, {
           input: { ...tech, techRadarId: newRadar.id, radarId: newRadar.id, id: null },

@@ -1,10 +1,9 @@
 import * as types from '../types/radar.type';
 import {
-  deleteItemFromList,
-  updateTechFromList,
-  addItemToList,
   dynamicSortMultiple,
 } from '../../function.helper';
+import produce from "immer";
+
 
 export const initialState = {
   currentRadarList: [],
@@ -15,89 +14,76 @@ export const initialState = {
   confirmedTechList: [],
 };
 
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
+const reducer = produce((draft = initialState, action) => {
+  const { type, payload } = action;
+     
+  switch (type) {
     case types.SET_CURRENT_TECH:
-      return {
-        ...state,
-        currentTech: action.payload,
-      };
-    case types.SET_TECH_LIST:
-      return {
-        ...state,
-        techList: action.payload.sort(dynamicSortMultiple('quadrant', 'ring')) || [],
-        unconfirmedTechList: action.payload.filter((tech) => {
-          return !tech.confirmed;
-        }),
-        confirmedTechList: action.payload.filter((tech) => {
-          return tech.confirmed;
-        }),
-        currentTech: action.payload[0],
-      };
-    case types.ADD_TO_TECH_LIST:
-      return {
-        ...state,
-        techList: addItemToList(state.techList, action.payload),
-      };
-    case types.UPDATE_TECH_IN_LIST:
-      return {
-        ...state,
-        techList: updateTechFromList(state.techList, action.payload),
-      };
-    case types.REMOVE_TECH_BY_RADAR:
-      return {
-        ...state,
-        techList: state.techList.filter((tech) => tech.radarId !== action.payload),
-        currentTech:
-          state.currentTech && state.currentTech.radarId === action.payload
-            ? null
-            : state.currentTech,
-      };
-    case types.REMOVE_FROM_TECH_LIST:
-      return {
-        ...state,
-        techList: deleteItemFromList(state.techList, action.payload),
-      };
-    case types.MERGE_TECH_LIST:
-      return {
-        ...state,
-        techList: state.techList.concat(action.payload),
-      };
-    case types.SET_ALL_RADARS:
-      return {
-        ...state,
-        allRadars: action.payload,
-      };
-    case types.MERGE_ALL_RADARS:
-      return {
-        ...state,
-        allRadars: [...state.allRadars, ...action.payload],
-      };
-    case types.SET_CURRENT_RADAR:
-      return {
-        ...state,
-        currentRadarList: action.payload,
-        techList: state.techList.filter((tech) => tech.radarId !== action.payload.id),
-      };
-    case types.REMOVE_FROM_ALL_RADARS:
-      return {
-        ...state,
-        currentRadarList: deleteItemFromList(state.currentRadarList, action.payload),
-        allRadars: deleteItemFromList(state.allRadars, action.payload),
-      };
-    case types.REMOVE_FROM_CURRENT_RADAR:
-      return {
-        ...state,
-        currentRadarList: deleteItemFromList(state.currentRadarList, action.payload),
-      };
-    case types.ADD_TO_CURRENT_RADAR:
-      return {
-        ...state,
-        currentRadarList: state.currentRadarList.concat([action.payload]),
-      };
+      draft.currentTech = payload
+      break
+    case types.SET_TECH_LIST: {
+      draft.techList = payload.sort(dynamicSortMultiple('quadrant', 'ring')) || [];
+      draft.unconfirmedTechList = payload.filter((tech) => !tech.confirmed)
+      draft.confirmedTechList = payload.filter((tech) => tech.confirmed)
+      draft.currentTech = payload[0]
+      break;
+    }
+
+    case types.ADD_TO_TECH_LIST: {
+      draft.techList.push(payload)
+      break
+    }
+    case types.UPDATE_TECH_IN_LIST: {
+      draft.techList = draft.techList.map((current) => {
+        if (payload.id === current.id) return payload;
+        else return current
+      });
+      break;
+    }
+    case types.REMOVE_TECH_BY_RADAR: {
+      draft.techList = draft.techList.filter((current) => current.radarId !== payload);
+      draft.currentTech = draft.currentTech ? (draft.currentTech.radarId === payload) ? null : draft.currentTech : null;
+      break;
+    }
+    case types.REMOVE_FROM_TECH_LIST: {
+      draft.techList = draft.techList.filter((current) => current.id !== payload.id);
+      break; 
+    }
+    case types.MERGE_TECH_LIST: {
+      draft.techList = draft.techList.concat(payload)
+      break;
+    }
+    case types.SET_ALL_RADARS: {
+      draft.allRadars = payload;
+      break;
+    }
+    case types.MERGE_ALL_RADARS: {
+      draft.allRadars = draft.allRadars.concat(payload)
+      break;
+    }
+    case types.SET_CURRENT_RADAR: {
+      draft.currentRadarList = payload;
+      draft.techList = draft.techList.filter( current => current.radarId !== payload.id);
+      break;
+    }
+    case types.REMOVE_FROM_ALL_RADARS: {
+      draft.currentRadarList = draft.currentRadarList.filter((current) => current.id !== payload.id);
+      draft.allRadars = draft.allRadars.filter((current) => current.id !== payload.id);
+      break;
+    }
+    case types.REMOVE_FROM_CURRENT_RADAR: {
+      draft.currentRadarList = draft.currentRadarList.filter((current) => {
+        return current.id !== payload.id
+      })
+      break;
+    }
+    case types.ADD_TO_CURRENT_RADAR: {
+      draft.currentRadarList = draft.currentRadarList.concat([payload])
+      break;
+    }
     default:
-      return state;
-  }
-};
+      return draft;
+    }
+})
 
 export default reducer;

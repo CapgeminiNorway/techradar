@@ -34,7 +34,7 @@ const RadarForm = () => {
   const initialRadarForm = { id: '', description: '', isPublic: false };
   const [radarForm, setRadarForm] = useState(initialRadarForm);
   const [year, setYear] = useState(Number(new Date().getFullYear()));
-  const [cop, setCop] = useState('NO-CoP-Architecture');
+  const [cop, setCop] = useState('Architecture');
   const [mergeTech, toggleMergeTech] = useState(false);
   const disabled = !radarForm.id.length;
   const publicName = `${cop}-${year}`;
@@ -82,7 +82,7 @@ const RadarForm = () => {
         <>
           <select name="cop" onChange={(e) => setCop(e.target.value)}>
             {communityNames.map((cop) => {
-              return <option key={cop} value={'NO-CoP-' + cop.replace(/\s+/g, '-')}>{cop}</option>;
+              return <option key={cop} value={cop.replace(/\s+/g, '-')}>{cop}</option>;
             })}
           </select>
           <h5>Year</h5>

@@ -134,8 +134,8 @@ const TechRadarWrapper = styled.div`
     
   width: ${(props) => (props.publicPage ? '100vw' : '80vw')};
   display: flex;
+    justify-content: ${(props) => (props.publicPage ? 'center' : 'flex-start')};
     align-items: center;
-    justify-content: center;
   svg .radar-text-line {
     padding: 4px;
     

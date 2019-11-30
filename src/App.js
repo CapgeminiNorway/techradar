@@ -30,7 +30,7 @@ Amplify.configure(aws_exports);
 export const QUADRANTS = [
   { name: 'Techniques', color: '#4285F4' },
   { name: 'Tools', color: '#DB4437' },
-  { name: 'Platforms', color: '#F4B400' },
+  { name: 'Platforms', color: '#f48942' },
   { name: 'Languages', color: '#0F9D58' },
 ];
  
