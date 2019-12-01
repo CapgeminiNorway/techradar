@@ -12,7 +12,7 @@ import { Grow } from './commons/styles';
 
 const SortBar = ({ list, handleClick, multiList }) => {
   const dispatch = useDispatch();
-  const { currentTech } = useSelector((state) => state.radar);
+  const { currentTech, currentRadarList } = useSelector((state) => state.radar);
 
   const [ searchString, setSearchString ] = React.useState("");
  
@@ -52,7 +52,9 @@ const SortBar = ({ list, handleClick, multiList }) => {
           current={getIsCurrent(tech, i)}
           onClick={() => handleSelectTech(tech)}>
           <b>{tech.name}</b>
+          { currentRadarList.length > 1 && 
           <p>{tech.radarId}</p>
+          }
           
            <RingLabel>{tech.ring}</RingLabel>
         </TechListItem>
