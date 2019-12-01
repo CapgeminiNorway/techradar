@@ -166,13 +166,16 @@ const StyledTechList = styled(motion.ol)`
   overflow-x: hidden;
   height: 100%;
   position: relative;
-  z-index: 100;
 
   h5 {
     margin: .5em;
     cursor: pointer;
   }
 
+  @media (min-width: 768px) {
+    z-index: 100;
+  }
+    
   @media (max-width: 768px) {
     min-width: 100vw;
     max-width: 100vw;
