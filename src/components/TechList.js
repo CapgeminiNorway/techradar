@@ -166,6 +166,7 @@ const StyledTechList = styled(motion.ol)`
   overflow-x: hidden;
   height: 100%;
   position: relative;
+  z-index: 100;
 
   h5 {
     margin: .5em;
