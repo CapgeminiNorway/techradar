@@ -69,13 +69,15 @@ const NavigationBar = withRouter(({ history }) => {
   if (windowSize.width > 768) {
     return (
       <StyledNavBar>
-        <NavIcon onClick={() => history.push('/')}>Tech Radar</NavIcon>
+        <NavIcon onClick={() => history.push('/')}>Tech Radar
+        </NavIcon>
+        <button className="web-about" onClick={openAbout}>About</button>
+
         <DesktopWrapper>
           <div>
             <button onClick={openAddTechModal}>Add Tech</button>
             {currentUser && currentUser.isAdmin && <button onClick={openManageRadar}>Add radar</button>}
             {currentUser && currentUser.isAdmin && <button onClick={toUserManagement}>User management</button>}
-            <button onClick={openAbout}>About</button>
             <button onClick={downloadRadarSvg}>Download SVG</button>
             <button onClick={downloadCSV}>Download CSV</button>
             <button onClick={() => dispatch(signOut())}>Sign out</button>
@@ -88,13 +90,17 @@ const NavigationBar = withRouter(({ history }) => {
       <>
         <StyledNavBar>
           <NavIcon onClick={() => history.push('/')}>Tech Radar</NavIcon>
+          <div>
+
+          <MobileButton topBar current={ModalComponent === MODAL_TYPES.ABOUT} onClick={openAbout}><AboutSvg/></MobileButton>
+          <MobileButton topBar onClick={() => dispatch(signOut())}><LogoutSvg /></MobileButton>
+          </div>
+
         </StyledNavBar>
         <MobileNavWrapper>
-          <MobileButton current={ModalComponent === MODAL_TYPES.ABOUT} onClick={openAbout}><AboutSvg/></MobileButton>
           {currentUser && currentUser.isAdmin && <MobileButton current={ModalComponent === MODAL_TYPES.USER_MANAGEMENT} onClick={toUserManagement}><UsersSvg /></MobileButton>}
           <MobileButton current={ModalComponent === MODAL_TYPES.TECH_FORM} onClick={openAddTechModal}><AddSvg /></MobileButton>
           {currentUser && currentUser.isAdmin && <MobileButton current={ModalComponent === MODAL_TYPES.RADAR_FORM} onClick={openManageRadar}><RadarSvg /></MobileButton>}
-          <MobileButton onClick={() => dispatch(signOut())}><LogoutSvg /></MobileButton>
         </MobileNavWrapper>
       </>
     );
@@ -104,8 +110,7 @@ const NavigationBar = withRouter(({ history }) => {
 export default React.memo(NavigationBar);
 
 export const MobileButton = styled.button`
-border-top: 1px solid white;
-border-right: 1px solid white;
+
 
 background: ${ props => props.current && props.theme.default.primaryColor};
 
@@ -117,6 +122,21 @@ svg {
   width: 25px;
   height: 25px;
 }
+
+
+${ props => props.topBar ? `
+  padding: 0;
+  margin-left: 20px; 
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+` : `
+
+border-top: 1px solid white;
+border-right: 1px solid white;
+`}
 `;
 
 export const NavIcon = styled.div`
@@ -127,6 +147,7 @@ export const NavIcon = styled.div`
   overflow: hidden;
   white-space: nowrap;
   font-size: 2em;
+
 
   @media (max-width: 768px) {
     font-size: 1.2em;
@@ -210,5 +231,18 @@ export const StyledNavBar = styled.nav`
   align-items: center;
   min-height: 5vh;
   max-height: 5vh;
+
+  
+  .web-about {
+    padding: 8px 12px;
+    border-radius: 3px;
+    font-weight: 600;
+    margin-right: 5px;
+    color: ${(props) => props.theme.default.primaryColor};
+    background: ${(props) => props.theme.default.lightColor};
+    border: none;
+    cursor: pointer;
+    margin-left: 1em;
+  }
 
 `;

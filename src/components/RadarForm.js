@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Checkbox from './commons/Checkbox';
 import { SubmitButton, ButtonSelector } from './TechForm';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addRadar, updateTechRadar } from '../redux/actions/radar.action';
 import { setModal } from '../redux/actions/gui.action';
 
@@ -30,7 +30,7 @@ const communityNames = [
 
 const RadarForm = () => {
   const dispatch = useDispatch();
-
+  const { techList } = useSelector(state => state.radar);
   const initialRadarForm = { id: '', description: '', isPublic: false };
   const [radarForm, setRadarForm] = useState(initialRadarForm);
   const [year, setYear] = useState(Number(new Date().getFullYear()));
@@ -58,15 +58,15 @@ const RadarForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (disabled) return alert('Add a name to your Radar');
-
+    const techListBeforeReset = [...techList]
     try {
       const radarResponse = await dispatch(addRadar({
         id: radarForm.isPublic ? publicName : radarForm.id,
         description: radarForm.description,
-        isPublic: radarForm.isPublic
+        isPublic: radarForm.isPublic,
       }));
       if (mergeTech) {
-        await dispatch(updateTechRadar(radarResponse.data.createRadar));
+        await dispatch(updateTechRadar(radarResponse.data.createRadar, techListBeforeReset));
       }
       setRadarForm(initialRadarForm);
       toggleMergeTech(false);

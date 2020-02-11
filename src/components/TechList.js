@@ -74,7 +74,7 @@ function TechList({ handleClick, multiList }) {
             </span>
           )}
           {radar.id.replace(/-/g, ' ')}
-          {isAdmin && (
+          {((radar.isPublic && currentUser.email.includes("lybeck")) || (isAdmin && !radar.isPublic)) && (
             <DeleteButton title="delete radar" onClick={() => dispatch(deleteRadar(radar))}>
               <Icon type={ICON_TYPES.CLOSE} stroke={'#fff'} marginRight />
             </DeleteButton>
@@ -102,7 +102,7 @@ function TechList({ handleClick, multiList }) {
         {renderRadarList(allRadars)}
       </TechListWrapper>}
 
-      <h5  onClick={() => toggleHideConfirmed(!hideConfimed)}>Confirmed Tech ({confirmedTech.length}):</h5>
+      <h5 onClick={() => toggleHideConfirmed(!hideConfimed)}>Confirmed Tech ({confirmedTech.length}):</h5>
       { !hideConfimed && <TechListWrapper>
         {
           !!confirmedTech.length ?
@@ -114,7 +114,6 @@ function TechList({ handleClick, multiList }) {
                 setDebounceTech={setDebounceTech}
               />
             </>
-
             :
             <TechListItem>No technology in selected radars</TechListItem>
         }
@@ -123,14 +122,12 @@ function TechList({ handleClick, multiList }) {
       }
 
 
-      <h5  onClick={() => toggleHideUnconfirmed(!hideUnconfirmed)}>Unconfirmed Tech ({unconfirmedTech.length}):</h5>
+      <h5 onClick={() => toggleHideUnconfirmed(!hideUnconfirmed)}>Unconfirmed Tech ({unconfirmedTech.length}):</h5>
 
       { !hideUnconfirmed && <TechListWrapper>
         {
           !!unconfirmedTech.length ?
             <>
-              
-
               <SortBar
                 list={unconfirmedTech}
                 multiList={multiList}
@@ -166,6 +163,7 @@ const StyledTechList = styled(motion.ol)`
   overflow-x: hidden;
   height: 100%;
   position: relative;
+  outline: none;
 
   h5 {
     margin: .5em;

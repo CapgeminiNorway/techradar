@@ -240,8 +240,7 @@ export const addRadar = (radarForm) => async (dispatch) => {
 };
 
 // Add all current selected technology to a radar without duplicates
-export const updateTechRadar = (newRadar) => async (dispatch, getState) => {
-  const { techList } = getState().radar;
+export const updateTechRadar = (newRadar, techList) => async (dispatch, getState) => {
 
   // Remove all duplicated names when mergin in new radar
   const uniqueList = techList.reduce((unique, o) => {
@@ -259,7 +258,8 @@ export const updateTechRadar = (newRadar) => async (dispatch, getState) => {
         }),
       );
     });
-    dispatch(toggleRadar(newRadar));
+    dispatch({type: types.SET_CURRENT_RADAR, payload: []});
+    dispatch({type: types.SET_TECH_LIST, payload: []});
   } catch (err) {
     dispatch(toggleUserWarning(getNetworkErrMsg(err)));
   }
