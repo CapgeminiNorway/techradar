@@ -5,16 +5,11 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { ThemeProvider } from 'styled-components';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import LogRocket from 'logrocket';
-import setupLogRocketReact from 'logrocket-react';
 import PublicRadarPage from './components/pages/PublicRadarPage';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
 import { Provider as ReduxProvider } from 'react-redux';
 import configureStore from './redux/store/index';
-
-LogRocket.init('rqj7fr/capgemini-tech-radar');
-setupLogRocketReact(LogRocket);
 
 // optional cofiguration
 const alertBoxConfig = {

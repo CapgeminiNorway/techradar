@@ -1,15 +1,6 @@
 import * as types from '../types/user.type';
-import LogRocket from 'logrocket';
 import { Auth, API } from 'aws-amplify';
 
-export const setupLogRocket = (currentUser) => {
-  LogRocket.identify(currentUser.id, {
-    name: currentUser.username,
-    email: currentUser.email,
-    // Add your own custom user variables here, ie:
-    subscriptionType: currentUser.isAdmin ? 'admin' : 'user',
-  });
-};
 
 export const makeAdmin = (user) => async (dispatch, getState) => {
 
@@ -93,7 +84,6 @@ export const makeAdmin = (user) => async (dispatch, getState) => {
       isAdmin: group.toLowerCase() === 'admin',
       email: user.attributes.email,
     };
-    setupLogRocket(currentUser);
     dispatch({ type: types.SET_CURRENT_USER, payload: currentUser });
   });
 };
