@@ -169,11 +169,14 @@ export const addTech = (newTechObj) => async (dispatch, getState) => {
   const { techList } = getState().radar;
   dispatch({ type: SET_IS_LOADING, payload: true });
 
+  const owner = currentUser.email.substr(0, currentUser.email.indexOf("."))
+
   const _newTechObj = {
     ...newTechObj,
     url: helper.checkLengthAndSetNull(newTechObj.url),
     description: helper.checkLengthAndSetNull(newTechObj.description),
     confirmed: currentUser.isAdmin,
+    owner: owner
   };
 
   let duplicate = false;

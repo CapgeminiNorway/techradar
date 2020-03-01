@@ -184,6 +184,10 @@ export function renderFiveTech(list) {
   }
 }
 
+export function deleteObjProp (obj, prop) {
+  if (Array.isArray(obj[prop]) && ! obj[prop].length) delete obj[prop];
+}
+
 export const removeArrayFromArray = (arr, arrToRemove) => {
   return arr.filter(function(el) {
     return arrToRemove.indexOf(el) < 0;

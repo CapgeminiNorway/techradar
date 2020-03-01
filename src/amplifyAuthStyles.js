@@ -41,7 +41,7 @@ export const SectionFooter = {
   fontSize: '14px',
   color: '#828282',
   display: 'flex',
-  flexDirection: 'row-reverse',
+  flexDirection: 'column-reverse',
   alignItems: 'flex-start',
 };
 
@@ -72,7 +72,7 @@ export const Input = {
 export const Button = {
   minWidth: '153px',
   display: 'inline-block',
-  marginBottom: '0',
+  margin: '1em 0',
   fontSize: '12px',
   fontWeight: 400,
   lineHeight: '1.42857143',
@@ -175,6 +175,8 @@ export const FormRow = {
 export const A = {
   color: '#0071ae',
   cursor: 'pointer',
+  width: '100%',
+  fontWeight: 'bolder'
 };
 
 export const Hint = {

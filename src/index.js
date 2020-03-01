@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { ThemeProvider } from 'styled-components';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
@@ -10,6 +9,7 @@ import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
 import { Provider as ReduxProvider } from 'react-redux';
 import configureStore from './redux/store/index';
+import PromptConsent from './PromptConsent';
 
 // optional cofiguration
 const alertBoxConfig = {
@@ -42,7 +42,7 @@ ReactDOM.render(
       <ThemeProvider theme={stylesTheme}>
         <AlertProvider template={AlertTemplate} {...alertBoxConfig}>
           <Switch>
-            <Route path="/edit/" component={App} />
+            <Route path="/edit/" component={PromptConsent} />
             <Route exact path="/:radarId?" component={PublicRadarPage} />
           </Switch>
         </AlertProvider>

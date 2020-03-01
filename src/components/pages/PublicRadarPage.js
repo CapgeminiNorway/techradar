@@ -3,7 +3,6 @@ import Radar from '../Radar';
 import { API } from 'aws-amplify';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
-import { dynamicSort } from '../../function.helper';
 import { NavIcon, StyledNavBar, RouteButton } from '../commons/NavigationBar';
 import { Route, Switch } from 'react-router-dom';
 
@@ -76,7 +75,8 @@ const PublicRadarPage = ({ history, match }) => {
             render={(props) => (
               <PublicRadarContainer>
                 {Array.isArray(publicRadars) &&
-                  publicRadars.sort(dynamicSort('id')).map((radar) => {
+                  publicRadars.sort().map((radar) => {
+                    console.log(radar);
                     return (
                       <PublicRadarButton
                         key={radar.id}
@@ -173,8 +173,6 @@ const PublicRadarButton = styled.button`
   color: ${(props) => props.theme.default.lightColor};
   border-radius: 10px;
   border: 3px solid ${(props) => props.theme.default.lightColor};
-  max-height: 30vh;
-  height: 200px;
 
   :hover {
     background: ${(props) => props.theme.default.lightColor};

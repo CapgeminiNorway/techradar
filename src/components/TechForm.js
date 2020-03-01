@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { QUADRANTS } from '../App';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteTech, updateTech, addTech } from '../redux/actions/radar.action';
+import { deleteObjProp } from "../function.helper"; 
 
 const TechForm = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const TechForm = () => {
     ring: 'adopt',
     moved: 'same',
     radarId: currentRadarList.length ? currentRadarList[0].id : '',
+    owner: currentTech ? currentTech.owner : null
   });
 
   const [enableSubmit, toggleEnableSubmit] = React.useState(false);
@@ -34,8 +36,8 @@ const TechForm = () => {
 
   React.useEffect(() => {
     if (currentTech) {
-      delete currentTech.radar;
-      delete currentTech.__typename;
+      deleteObjProp(currentTech, "radar");
+      deleteObjProp(currentTech, "__typename");
       setTechForm(currentTech);
     }
   }, [currentTech]);
@@ -215,6 +217,8 @@ const TechForm = () => {
           </>
         )}
       </TechFormInput>
+      {currentTech && <h5>Created by: {currentTech.owner}</h5>}
+
 
       <TechFormInput xstart={5} xend={9} yStart={4} yEnd={4}>
         {canDeleteTech && (

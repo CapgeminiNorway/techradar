@@ -30,7 +30,11 @@ const reducer = produce((draft = initialState, action) => {
     }
 
     case types.ADD_TO_TECH_LIST: {
-      draft.techList.push(payload)
+      if (draft.currentRadarList.some( (currentRadar) => currentRadar.id === payload.radarId)) {
+        draft.techList.push(payload)
+      } else {
+        alert("radar not selected")
+      }
       break
     }
     case types.UPDATE_TECH_IN_LIST: {
