@@ -1,7 +1,14 @@
-type Tech @model @auth(rules: [
-    { allow: owner },
-    { allow: groups, groups: ["admin"], queries: [get,list], mutations: [create, delete, update] }
-    { allow: groups, groups: ["user"], queries: [get,list] mutations: [create] }
+type Tech @model(
+subscriptions: {
+     level: public 
+  }
+) 
+@auth(
+  
+  rules: [
+    { allow: owner, ownerField: "owner" },
+    { allow: groups, groups: ["admin"] }
+    { allow: groups, groups: ["user"], operations: [create, read, update] }
   ]) {
   id: ID!
   name: String!
@@ -16,14 +23,18 @@ type Tech @model @auth(rules: [
   moved: String!
 }
 
-type Radar @model @auth(rules: [
-    { allow: owner },
-    { allow: groups, groups: ["admin"], queries: [get,list], mutations: [create, delete, update] }
-    { allow: groups, groups: ["user"], queries: [get,list] }
+type Radar @model(
+subscriptions: {
+     level: public 
+  }
+)  @auth(
+  rules: [
+    { allow: owner, ownerField: "owner" },
+    { allow: groups, groups: ["admin", "super"] }
+    { allow: groups, groups: ["user"], operations: [read] }
   ]) {
   id: ID!
   description: String
-  prevRadarUrl: String
   isPublic: Boolean
   owner: String
   techList: [Tech] @connection (name: "RadarTech", sortField: "ring")

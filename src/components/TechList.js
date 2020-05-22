@@ -5,80 +5,43 @@ import { stylesTheme } from '../index';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentTech, toggleRadar, deleteRadar, silentlyConfirmTech } from '../redux/actions/radar.action';
 import Icon, { ICON_TYPES } from '../assets/icons/IconComponent';
-import { WhiteButton } from './pages/GenerateWordCloud';
 import { motion } from "framer-motion"
 import SortBar from './SortBar';
 import { useWindowSize } from '../custom-hooks';
-import { ReactComponent as ChevronUpSvg} from "../assets/chevron-up.svg";
-
-export const techListAnim = {
-    hidden: { 
-      y: "100%",
-      transition: {
-        when: "afterChildren",
-      },
-    },
-    visible: { 
-      y: 0 ,
-      transition: {
-        when: "beforeChildren",
-        staggerChildren: 0.3,
-        duration: 1, 
-        ease: "easeOut", 
-        delay: 1
-      },
-    },
-}
-
-export const techItemAnim = {
-  visible: i => ({
-    opacity: 1, 
-    x: 0, 
-    transition: {
-      when: "beforeChildren",
-      duration: 1, 
-      ease: "easeOut", 
-      delay: 1 + i * 0.3
-    },
-  }),
-  hidden: { 
-    opacity: 0, 
-    x: -100 
-  },
-}
-export const opacityAnim = {
-    visible: {
-      opacity: 1, 
-      transition: {
-        duration: 1, 
-        ease: "easeOut", 
-        delay: 3
-      },
-    },
-    hidden: { 
-      opacity: 0, 
-    },
-}
+import { ReactComponent as ChevronUpSvg } from "../assets/chevron-up.svg";
+import { getUnconfirmedTech, getConfirmedTech } from '../redux/selectors/radar.selector';
 
 function TechList({ handleClick, multiList }) {
   const dispatch = useDispatch();
-  const { currentRadarList, allRadars, techList } = useSelector((state) => state.radar);
+  const { currentRadarList, allRadars } = useSelector((state) => state.radar);
   const currentUser = useSelector((state) => state.user.currentUser);
   const isAdmin = currentUser && currentUser.isAdmin;
   const [debounceTech, setDebounceTech] = useState(null);
   const [tech] = useDebounce(debounceTech, 100);
   const windowSize = useWindowSize();
+  const unconfirmedTech = useSelector(state => getUnconfirmedTech(state));
+  const confirmedTech = useSelector(state => getConfirmedTech(state));
 
 
-  const [ unconfirmedTech, confirmedTech ] = React.useMemo( () => {
-    let _unc = [], _c = [];
-    techList.forEach( tech => {
-      if (tech.confirmed) _c.push(tech);
-      else _unc.push(tech);
-    })
-    return [_unc, _c];
-
-  }, [techList]);
+  const techListAnim = {
+    hidden: {
+      x: windowSize.isMobile ? 0 : 0,
+      y: windowSize.isMobile ? "100%" : 0,
+      transition: {
+        when: "afterChildren",
+      },
+    },
+    visible: {
+      x: 0,
+      y: 0,
+      transition: {
+        when: "beforeChildren",
+        duration: 1,
+        ease: "easeOut",
+        delay: 1
+      },
+    },
+  }
 
   const dispatchConfirmAll = () => dispatch(silentlyConfirmTech(unconfirmedTech));
 
@@ -98,8 +61,6 @@ function TechList({ handleClick, multiList }) {
       if (!radar) return null;
       return (
         <TechListItem
-          variants={techItemAnim}
-          custom={i}
           key={radar.id}
           focusable
           color={stylesTheme.default.lightColor}
@@ -113,7 +74,7 @@ function TechList({ handleClick, multiList }) {
             </span>
           )}
           {radar.id.replace(/-/g, ' ')}
-          {isAdmin && (
+          {((radar.isPublic && currentUser.email.includes("lybeck")) || (isAdmin && !radar.isPublic)) && (
             <DeleteButton title="delete radar" onClick={() => dispatch(deleteRadar(radar))}>
               <Icon type={ICON_TYPES.CLOSE} stroke={'#fff'} marginRight />
             </DeleteButton>
@@ -122,22 +83,27 @@ function TechList({ handleClick, multiList }) {
       );
     });
   };
-  
-  const [fullSize, toggleFullsize] = React.useState(false);
 
+  const [fullSize, toggleFullsize] = React.useState(false);
+  const [hideRadars, toggleHideRadars] = React.useState(false);
+  const [hideConfimed, toggleHideConfirmed] = React.useState(false);
+  const [hideUnconfirmed, toggleHideUnconfirmed] = React.useState(false);
   return (
     <StyledTechList fullSize={fullSize} tabIndex={0} initial="hidden"
-    animate="visible" variants={techListAnim}
+      animate="visible" variants={techListAnim}
     >
-      { windowSize.width < 768 && 
-      <ToggleHeight fullSize={fullSize}  onClick={() => toggleFullsize(!fullSize)}>
-        <ChevronUpSvg />
-      </ToggleHeight>}
-      <TechListWrapper>
-        <h5>All radars:</h5> {renderRadarList(allRadars)}
-      </TechListWrapper>
-      <TechListWrapper>
-        <h5>Confirmed Tech ({confirmedTech.length}):</h5>
+      {windowSize.width < 768 &&
+        <ToggleHeight fullSize={fullSize} onClick={() => toggleFullsize(!fullSize)}>
+          <ChevronUpSvg />
+        </ToggleHeight>}
+
+      <h5 onClick={() => toggleHideRadars(!hideRadars)}>All radars:</h5>
+      {!hideRadars && <TechListWrapper>
+        {renderRadarList(allRadars)}
+      </TechListWrapper>}
+
+      <h5 onClick={() => toggleHideConfirmed(!hideConfimed)}>Confirmed Tech ({confirmedTech.length}):</h5>
+      { !hideConfimed && <TechListWrapper>
         {
           !!confirmedTech.length ?
             <>
@@ -148,38 +114,37 @@ function TechList({ handleClick, multiList }) {
                 setDebounceTech={setDebounceTech}
               />
             </>
-
             :
             <TechListItem>No technology in selected radars</TechListItem>
         }
 
       </TechListWrapper>
+      }
 
-      <TechListWrapper>
-        <h5>Unconfirmed Tech ({unconfirmedTech.length}):</h5>
+
+      <h5 onClick={() => toggleHideUnconfirmed(!hideUnconfirmed)}>Unconfirmed Tech ({unconfirmedTech.length}):</h5>
+
+      { !hideUnconfirmed && <TechListWrapper>
         {
           !!unconfirmedTech.length ?
             <>
-              {!!(currentUser && currentUser.isAdmin) &&
-                <ConfirmAllWrapper>
-                  <WhiteButton onClick={dispatchConfirmAll}>Confirm all</WhiteButton>
-                </ConfirmAllWrapper>
-              }
-
               <SortBar
                 list={unconfirmedTech}
                 multiList={multiList}
                 handleClick={handleClick}
                 setDebounceTech={setDebounceTech}
               />
+              {!!(currentUser && currentUser.isAdmin) &&
+                <ConfirmAllWrapper>
+                  <button onClick={dispatchConfirmAll}>Confirm all technology</button>
+                </ConfirmAllWrapper>
+              }
             </>
             :
             <TechListItem>No technology in selected radars</TechListItem>
         }
-
-
-
       </TechListWrapper>
+      }
     </StyledTechList>
   );
 }
@@ -192,20 +157,27 @@ const StyledTechList = styled(motion.ol)`
   flex-direction: column;
   justify-content: flex-start;
   background: ${(props) => props.theme.default.primaryColor};
-  min-width: 300px;
-  max-width: 300px;
+  min-width: 20em;
+  max-width: 20em;
   overflow-y: auto;
+  overflow-x: hidden;
   height: 100%;
   position: relative;
+  outline: none;
 
   h5 {
-    margin: 0 .5em;
+    margin: .5em;
+    cursor: pointer;
   }
 
+  @media (min-width: 768px) {
+    z-index: 100;
+  }
+    
   @media (max-width: 768px) {
     min-width: 100vw;
     max-width: 100vw;
-    padding: 1em;
+    padding: 1em .5em;
     padding-bottom: 5em;
     transition: min-height 500ms ease-out, max-height 500ms ease-out;
 
@@ -215,8 +187,8 @@ const StyledTechList = styled(motion.ol)`
     max-height: 100vh;
     ` : `
     
-    min-height: 40vh;
-    max-height: 40vh;
+    min-height: 45vh;
+    max-height: 45vh;
     `};
   }
 `;
@@ -226,7 +198,7 @@ const ToggleHeight = styled.div`
   left: 0;
   right: 0;
   top: 0;
-  height: 15px;
+  height: 2vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -240,14 +212,17 @@ const ToggleHeight = styled.div`
   }
 `;
 const ConfirmAllWrapper = styled.div`
-width: 100%;
 display: flex;
 justify-content: center;
 align-items: center;
-padding: 0 10px;
+padding: 10px;
+margin: 10px 0;
 
 button {
-  width: 100%;
+  background: none;
+  color: white;
+  font-weight: 600;
+  text-decoration: underline;
   :hover {
     background: white;
   }
@@ -271,7 +246,7 @@ const DeleteButton = styled.span`
   border-radius: 50%;
 `;
 
-export const TechListItem = styled(motion.li)`
+export const TechListItem = styled.li`
   position: relative;
   padding: .5em 2em .5em .5em;
   text-align: left;

@@ -5,7 +5,6 @@ export const getRadarAllTech = `query ListRadars(
     items {
       id
       description
-      prevRadarUrl
       owner
       techList(limit: 150) {
           items {

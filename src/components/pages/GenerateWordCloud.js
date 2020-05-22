@@ -1,5 +1,5 @@
 import React from 'react';
-import TechList, { opacityAnim } from '../TechList';
+import TechList from '../TechList';
 import styled from 'styled-components';
 import layout from '../../d3/word_cloud';
 import { deleteItemFromList } from '../../function.helper';
@@ -55,14 +55,8 @@ const WordCloudPage = () => {
         techList={confirmedTech}
       />
 
-      <CenterContainerCol variants={opacityAnim}>
+      <CenterContainerCol>
           <StyledAnimateCurrentTech>
-            <h1>Word Cloud</h1>
-            <p>
-              By selecting technology in the list to the left you can create a word cloud based on
-              that technology, then download it as a SVG file
-            </p>
-
             <ButtonBar>
               <WhiteButton onClick={regenerateCloud}>Generate New</WhiteButton>
               <WhiteButton onClick={() => setWordCloudList([])}>Clear</WhiteButton>

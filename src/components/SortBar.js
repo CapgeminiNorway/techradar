@@ -7,12 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentTech } from '../redux/actions/radar.action';
 import { setModal } from '../redux/actions/gui.action';
 import { MODAL_TYPES } from './commons/Modal';
-import { techItemAnim, TechListItem } from './TechList';
+import {  TechListItem } from './TechList';
 import { Grow } from './commons/styles';
 
 const SortBar = ({ list, handleClick, multiList }) => {
   const dispatch = useDispatch();
-  const { currentTech } = useSelector((state) => state.radar);
+  const { currentTech, currentRadarList } = useSelector((state) => state.radar);
 
   const [ searchString, setSearchString ] = React.useState("");
  
@@ -44,8 +44,6 @@ const SortBar = ({ list, handleClick, multiList }) => {
       if (!tech) return null;
       return (
         <TechListItem
-          variants={techItemAnim}
-          custom={i}
           key={tech.id}
           focusable
           color={stylesTheme.default.lightColor}
@@ -53,7 +51,12 @@ const SortBar = ({ list, handleClick, multiList }) => {
           tabIndex={0}
           current={getIsCurrent(tech, i)}
           onClick={() => handleSelectTech(tech)}>
-          {tech.name} <RingLabel>{tech.ring}</RingLabel>
+          <b>{tech.name}</b>
+          { currentRadarList.length > 1 && 
+          <p>{tech.radarId}</p>
+          }
+          
+           <RingLabel>{tech.ring}</RingLabel>
         </TechListItem>
       );
     });

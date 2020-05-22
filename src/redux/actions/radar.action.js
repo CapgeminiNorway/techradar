@@ -158,6 +158,7 @@ export const deleteTech = (tech) => async (dispatch, getState) => {
     await API.graphql(graphqlOperation(m.deleteTech, { input: { id: tech.id } }));
     dispatch(toggleUserWarning(`Deleted Technology: ${tech.name}`));
     dispatch({ type: types.SET_CURRENT_TECH, payload: null });
+    dispatch(setModal(null));
   } catch (err) {
     dispatch(toggleUserWarning('Network error!'));
   }
@@ -168,11 +169,14 @@ export const addTech = (newTechObj) => async (dispatch, getState) => {
   const { techList } = getState().radar;
   dispatch({ type: SET_IS_LOADING, payload: true });
 
+  const owner = currentUser.email.substr(0, currentUser.email.indexOf("."))
+
   const _newTechObj = {
     ...newTechObj,
     url: helper.checkLengthAndSetNull(newTechObj.url),
     description: helper.checkLengthAndSetNull(newTechObj.description),
     confirmed: currentUser.isAdmin,
+    owner: owner
   };
 
   let duplicate = false;
@@ -231,25 +235,34 @@ export const addRadar = (radarForm) => async (dispatch) => {
     const radar = await API.graphql(graphqlOperation(m.createRadar, { input: newRadar }));
     dispatch(toggleUserWarning(`Created radar ${newRadar.id}`));
     dispatch({type: types.SET_CURRENT_RADAR, payload: []});
-    dispatch({type: types.SET_CURRENT_TECH, payload: []})
+    dispatch({type: types.SET_TECH_LIST, payload: []});
     return radar;
   } catch (err) {
     dispatch(toggleUserWarning(getNetworkErrMsg(err)));
   }
 };
 
-export const updateTechRadar = (newRadar) => async (dispatch, getState) => {
-  const { techList } = getState().radar;
+// Add all current selected technology to a radar without duplicates
+export const updateTechRadar = (newRadar, techList) => async (dispatch, getState) => {
+
+  // Remove all duplicated names when mergin in new radar
+  const uniqueList = techList.reduce((unique, o) => {
+    if(!unique.some(obj => obj.name === o.name)) {
+      unique.push(o);
+    }
+    return unique;
+},[]);
 
   try {
-    techList.map(async (tech) => {
+    uniqueList.map(async (tech) => {
       await API.graphql(
         graphqlOperation(m.createTech, {
           input: { ...tech, techRadarId: newRadar.id, radarId: newRadar.id, id: null },
         }),
       );
     });
-    dispatch(toggleRadar(newRadar));
+    dispatch({type: types.SET_CURRENT_RADAR, payload: []});
+    dispatch({type: types.SET_TECH_LIST, payload: []});
   } catch (err) {
     dispatch(toggleUserWarning(getNetworkErrMsg(err)));
   }

@@ -3,29 +3,20 @@ import styled from 'styled-components';
 import { radar_visualization } from '../d3/radar_visualization';
 import { QUADRANTS } from '../App';
 import { stylesTheme } from '../index';
-import { getQuadrant, getRing, getMovedStatus, convertJsonToExcel } from '../function.helper';
+import { getQuadrant, getRing, getMovedStatus } from '../function.helper';
 import * as d3 from 'd3';
 import { withRouter } from 'react-router-dom';
-import { downloadSVG } from '../helper';
-import { WhiteButton } from './pages/GenerateWordCloud';
-import { useSelector, useDispatch } from 'react-redux';
-import { toggleUserWarning, setModal } from '../redux/actions/gui.action';
+import { useDispatch } from 'react-redux';
+import { setModal } from '../redux/actions/gui.action';
 import { StyledAnimateCurrentTech } from './commons/styles';
 import { useWindowSize } from '../custom-hooks';
 import { MODAL_TYPES } from './commons/Modal';
 import { setCurrentTech } from '../redux/actions/radar.action';
-import { opacityAnim } from "./TechList";
-import { motion } from "framer-motion"
 
 function Radar({ publicPage, techList }) {
-  const { currentRadarList } = useSelector((state) => state.radar);
   const dispatch = useDispatch();
 
-  const { width } = useWindowSize();
-  const mobileAgent = window.navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/);
-  const isMobile = React.useMemo(() => {
-    return width < 768 || mobileAgent;
-  }, [width, mobileAgent]);
+  const { isMobile } = useWindowSize();
 
   const radarRef = useRef();
   const radarWidth = 1450;
@@ -89,12 +80,12 @@ function Radar({ publicPage, techList }) {
       svg_id: 'radar',
       width: radarWidth,
       height: radarHeight,
-      isMobile: !!isMobile,
+      isMobile: !!(isMobile),
       textColor: stylesTheme.default.lightColor,
       ringText: 'rgba(255,255,255,0.5)',
       colors: {
         background: '#282c34',
-        grid: '#bbb',
+        grid: 'white',
         inactive: '#ddd',
       },
       title: '',
@@ -117,42 +108,11 @@ function Radar({ publicPage, techList }) {
     updateRadar();
   }, [techList, updateRadar, radarRef]);
 
-  const downloadRadarSvg = () => {
-    if (!currentRadarList.length) {
-      dispatch(toggleUserWarning('Pick a radar with technology to download'));
-    } else {
-      downloadSVG('radar', `${currentRadarList[0].id}-Radar.svg`);
-    }
-  };
-
-  const downloadCSV = () => {
-    if (!currentRadarList.length) {
-      dispatch(toggleUserWarning('Pick a radar with technology to download'));
-    } else {
-      convertJsonToExcel(techList, currentRadarList[0].id);
-    }
-  };
 
   return (
     <>
-      <TechRadarWrapper variants={opacityAnim} id="radarParent" publicPage={!!publicPage}>
+      <TechRadarWrapper id="radarParent" publicPage={!!publicPage}>
           <StyledAnimateCurrentTech>
-            {!publicPage && (
-              <TextWrapper>
-                <h1>Radar</h1>
-                <p>
-                  The radar is a result of which radars you have selected to the left list. When you
-                  are satisfied with the result, you can download SVG or Excel here.
-                </p>
-                {!isMobile && (
-                  <>
-                    <WhiteButton onClick={downloadRadarSvg}>Download Radar SVG</WhiteButton>
-                    <WhiteButton onClick={downloadCSV}>Download Excel (.csv)</WhiteButton>
-                  </>
-                )}
-              </TextWrapper>
-            )}
-
             <svg
               ref={radarRef}
               id="radar"
@@ -169,14 +129,19 @@ function Radar({ publicPage, techList }) {
 
 export default withRouter(memo(Radar));
 
-const TextWrapper = styled.div`
-  padding: 1em;
-`;
 
-const TechRadarWrapper = styled(motion.div)`
+const TechRadarWrapper = styled.div`
+    
   width: ${(props) => (props.publicPage ? '100vw' : '80vw')};
-
+  display: flex;
+    justify-content: ${(props) => (props.publicPage ? 'center' : 'flex-start')};
+    align-items: center;
   svg .radar-text-line {
     padding: 4px;
+    
+    max-width: 1500px;
+    max-height: 1200px;
   }
+
+
 `;

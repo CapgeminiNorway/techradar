@@ -12,9 +12,9 @@ const About = () => {
       <h1>What is a Tech Radar?</h1>
       <div>
         <GeneralRadarExplanation />
-        <IntroductionInformation />
+        <RadarExplanationInformation />
       </div>
-      <RadarExplanationInformation />
+      <IntroductionInformation />
     </Wrapper>
   );
 };
@@ -23,6 +23,10 @@ export default About;
 
 export const Wrapper = styled.div`
   width: 100%;
+
+  p {
+    font-size: 1em;
+  }
 
   h3 {
     margin: 1em 0;

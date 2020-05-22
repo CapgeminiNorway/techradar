@@ -1,4 +1,4 @@
-// eslint-disable
+/* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
 export const onCreateTech = `subscription OnCreateTech {
@@ -12,7 +12,6 @@ export const onCreateTech = `subscription OnCreateTech {
     radar {
       id
       description
-      prevRadarUrl
       isPublic
       owner
       techList {
@@ -37,7 +36,6 @@ export const onUpdateTech = `subscription OnUpdateTech {
     radar {
       id
       description
-      prevRadarUrl
       isPublic
       owner
       techList {
@@ -62,7 +60,6 @@ export const onDeleteTech = `subscription OnDeleteTech {
     radar {
       id
       description
-      prevRadarUrl
       isPublic
       owner
       techList {
@@ -80,7 +77,6 @@ export const onCreateRadar = `subscription OnCreateRadar {
   onCreateRadar {
     id
     description
-    prevRadarUrl
     isPublic
     owner
     techList {
@@ -105,7 +101,6 @@ export const onUpdateRadar = `subscription OnUpdateRadar {
   onUpdateRadar {
     id
     description
-    prevRadarUrl
     isPublic
     owner
     techList {
@@ -130,7 +125,6 @@ export const onDeleteRadar = `subscription OnDeleteRadar {
   onDeleteRadar {
     id
     description
-    prevRadarUrl
     isPublic
     owner
     techList {

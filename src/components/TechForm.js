@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { QUADRANTS } from '../App';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteTech, updateTech, addTech } from '../redux/actions/radar.action';
+import { deleteObjProp } from "../function.helper"; 
 
 const TechForm = () => {
   const dispatch = useDispatch();
@@ -11,7 +12,8 @@ const TechForm = () => {
   const isAdmin = currentUser && currentUser.isAdmin; 
 
   const deleteCurrentTech = () => dispatch(deleteTech(currentTech));
-
+  const canDeleteTech = (currentTech && currentTech.id) && (currentUser.username === currentTech.owner || isAdmin);
+  
   const [techForm, setTechForm] = React.useState({
     id: currentTech ? currentTech.id : null,
     confirmed: false,
@@ -22,6 +24,7 @@ const TechForm = () => {
     ring: 'adopt',
     moved: 'same',
     radarId: currentRadarList.length ? currentRadarList[0].id : '',
+    owner: currentTech ? currentTech.owner : null
   });
 
   const [enableSubmit, toggleEnableSubmit] = React.useState(false);
@@ -33,8 +36,8 @@ const TechForm = () => {
 
   React.useEffect(() => {
     if (currentTech) {
-      delete currentTech.radar;
-      delete currentTech.__typename;
+      deleteObjProp(currentTech, "radar");
+      deleteObjProp(currentTech, "__typename");
       setTechForm(currentTech);
     }
   }, [currentTech]);
@@ -111,36 +114,6 @@ const TechForm = () => {
           name="description"
           onChange={(e) => handleChange(e)}
         />
-      </TechFormInput>
-
-      <TechFormInput xstart={5} xend={9} yStart={2} yEnd={2}>
-        <h5>Changes since last radar</h5>
-        <ButtonSelector>
-          <button
-            onClick={(e) => handleButtonClick(e, 'moved')}
-            name="same"
-            type="button"
-            className={techForm.moved === 'same' ? 'current' : ''}
-            value="same">
-            ● No change
-          </button>
-          <button
-            onClick={(e) => handleButtonClick(e, 'moved')}
-            name="up"
-            type="button"
-            className={techForm.moved === 'up' ? 'current' : ''}
-            value="up">
-            ▲ moved up
-          </button>
-          <button
-            onClick={(e) => handleButtonClick(e, 'moved')}
-            name="down"
-            type="button"
-            className={techForm.moved === 'down' ? 'current' : ''}
-            value="down">
-            ▼ moved down
-          </button>
-        </ButtonSelector>
       </TechFormInput>
 
       <TechFormInput xstart={1} xend={5} yStart={3} yEnd={3}>
@@ -244,15 +217,17 @@ const TechForm = () => {
           </>
         )}
       </TechFormInput>
+      {currentTech && <h5>Created by: {currentTech.owner}</h5>}
+
 
       <TechFormInput xstart={5} xend={9} yStart={4} yEnd={4}>
-        {isAdmin && currentTech && currentTech.id && (
+        {canDeleteTech && (
           <RemoveButton onClick={deleteCurrentTech} type="button">
             Delete
           </RemoveButton>
         )}
         <SubmitButton _disabled={!enableSubmit} type="submit">
-          {currentTech ? 'Update' : 'Submit'}
+          {currentTech ? isAdmin ? 'Confirm' : 'Update' : 'Submit'}
         </SubmitButton>
       </TechFormInput>
     </AddTechForm>

@@ -1,20 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { ThemeProvider } from 'styled-components';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import LogRocket from 'logrocket';
-import setupLogRocketReact from 'logrocket-react';
 import PublicRadarPage from './components/pages/PublicRadarPage';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
 import { Provider as ReduxProvider } from 'react-redux';
 import configureStore from './redux/store/index';
-
-LogRocket.init('rqj7fr/capgemini-tech-radar');
-setupLogRocketReact(LogRocket);
+import PromptConsent from './PromptConsent';
 
 // optional cofiguration
 const alertBoxConfig = {
@@ -28,14 +23,14 @@ const alertBoxConfig = {
 
 export const stylesTheme = {
   default: {
-    primaryColor: '#0071ae', // 2B0B3D
+    primaryColor: '#00517c', // 2B0B3D
     secondaryColor: '#09ACDC',
     backgroundColor: '#282c34',
     fontColor: 'black',
     lightColor: 'white',
     grayColor: '#ddd',
     opaqueWhite: 'rgba(255,255,255,0.3)',
-    negativeColor: 'red',
+    negativeColor: '#ff3e3e',
     secondaryNegativeColor: 'darkred',
   },
 };
@@ -47,7 +42,7 @@ ReactDOM.render(
       <ThemeProvider theme={stylesTheme}>
         <AlertProvider template={AlertTemplate} {...alertBoxConfig}>
           <Switch>
-            <Route path="/edit/" component={App} />
+            <Route path="/edit/" component={PromptConsent} />
             <Route exact path="/:radarId?" component={PublicRadarPage} />
           </Switch>
         </AlertProvider>

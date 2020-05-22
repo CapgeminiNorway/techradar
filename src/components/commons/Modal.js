@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
-import posed, { PoseGroup } from 'react-pose';
+import {motion, AnimatePresence} from 'framer-motion';
 import { usePortal } from '../../helper';
 import Icon, { ICON_TYPES } from '../../assets/icons/IconComponent';
 import styled from 'styled-components';
@@ -13,6 +13,28 @@ export const MODAL_TYPES = {
   ABOUT: "ABOUT",
   USER_MANAGEMENT: "USER_MANAGEMENT",
 
+}
+
+const modalVariants = {
+  enter: {
+    y: '0%',
+
+    opacity:1,
+    transition: {
+      type: 'tween',
+      ease: 'easeInOut',
+      duration: .5,
+    },
+  },
+  exit:{
+    y: '100%',
+    opacity:0,
+    transition: {
+      type: 'tween',
+      ease: 'easeInOut',
+      duration: .5,
+    },
+  }
 }
 
 const Modal = ({
@@ -32,14 +54,19 @@ const Modal = ({
   const target = usePortal('modal-root');
 
   return ReactDOM.createPortal(
-    <PoseGroup preEnterPose={'preEnter'}>
+    <AnimatePresence>
       {open && (
         <StyledModal
+
           scrollable={!!scrollable}
           color={color}
           background={background}
           key={`modal`}
           size={size}
+          variants={modalVariants}
+          exit= {"exit"}
+          initial ={"exit"}
+          animate={open ? "enter" : "exit"}
           noPadding={!!noPadding}
           bottom={!!bottom}
           rounded={!!rounded}>
@@ -57,45 +84,11 @@ const Modal = ({
           <ModalContent marginTop={headerColor}>{children}</ModalContent>
         </StyledModal>
       )}
-    </PoseGroup>,
+    </AnimatePresence>,
     target,
   );
 };
 export default withRouter(Modal);
-
-const TIMING = {
-  NORMAL: 400,
-  SLOW: 800,
-  FAST: 200,
-};
-
-export const SlideVerticalAnimation = posed.div({
-  enter: {
-    y: '0%',
-    transition: {
-      type: 'tween',
-      ease: 'easeInOut',
-      duration: TIMING.NORMAL,
-    },
-  },
-  exit: {
-    y: '120%',
-    position: 'absolute',
-    transition: {
-      type: 'tween',
-      ease: 'easeInOut',
-      duration: TIMING.NORMAL,
-    },
-  },
-  preEnter: {
-    y: '120%',
-    transition: {
-      type: 'tween',
-      ease: 'easeInOut',
-      duration: TIMING.SLOW,
-    },
-  },
-});
 
 export const ModalContent = styled.div`
   padding: 30px;
@@ -109,7 +102,7 @@ export const ModalContent = styled.div`
   }
 `;
 
-export const StyledModal = styled(SlideVerticalAnimation)`
+export const StyledModal = styled(motion.div)`
   box-shadow: 5px 5px 500rem 500rem rgb(0, 0, 0, 0.5);
   position: fixed;
   overflow: hidden;

@@ -1,6 +1,55 @@
+
+# Capgemini Tech Radar
+
+This project was created with and [AWS Amplify](https://docs.amplify.aws)
+
+## Installation
+
+### AWS
+
+Install [AWS Amplify (see tutorial here)](https://docs.amplify.aws/cli/start/install)
+
+Follow the installation guide to setup the AWS Amplify CLI on your computer. 
+
+There are 2 environments set up; Master, and Development. These are used to connect to the backend services, such as DynamoDB, Lambda functions, AppSync/GraphQL server and Cognito authentication. Therefore, it's important to set up the correct environment, so that developers doesn't make changes to the production environment. 
+
+You also need the AWS Amplify environments set up to be able to actually log in.
+
+**NB! There is a set up file missing in the Git, for security reasons. Ask Jørgen about this**
+
+Get familiar with the [AWS Amplify teams environment here](https://docs.amplify.aws/cli/teams/overview)
+
+Flow:
+* I recommend using the Development branch locally, with the AWS Amplify configuration for the Development environment. 
+* Then commit your changes to development. 
+* Create a PR to master
+* Have someone review your code, e.g. Jørgen Lybeck Hansen who'm can be notified on Teams or by mail
+* PR is accepted to master, it will then build the production build through AWS
+
+
+### Environments
+
+Development: https://development.d35pmvnprdsmg2.amplifyapp.com/
+Master: https://www.cop-tech-radar.com/
+
+The goal is to always use Development locally, to test changes. 
+
+
+## React
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+### Packages
+
+The techradar app is heavily depending on these npm libraries
+* Redux
+* Styled Components
+* Jest 
+* Framer Motion (animations)
+* React Router DOM
+* AWS Amplify
+* and more... 
+
+### Scripts 
 
 In the project directory, you can run:
 

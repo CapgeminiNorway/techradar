@@ -3,21 +3,9 @@ import Radar from '../Radar';
 import { API } from 'aws-amplify';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
-import { dynamicSort } from '../../function.helper';
-import { NavIcon, StyledNavBar } from '../commons/NavigationBar';
+import { NavIcon, StyledNavBar, RouteButton } from '../commons/NavigationBar';
 import { Route, Switch } from 'react-router-dom';
 
-/**
- * This page will be implemented as soon as support for multiple API's are available.
- *
- * https://github.com/aws-amplify/amplify-cli/issues/335
- *
- * Thanks for the feature request. We will use this ticket to track this item as we prioritize. It would be nice to allow multiple APIs in one project.
- * The goto use case to me is to allow a publically available API with IAM auth enabled and then a user based API with user pools enabled in the same project.
- * --------+
- * This use case you're describing is what got me here. I want to add data to a database which should be publically available without logging in with Cognito.
- * Add data while logged in and read it from anywhere. Is there any other thread since this got closed, or will it be re-opened when feature is being worked on?
- */
 const PublicRadarPage = ({ history, match }) => {
   const [error, setError] = React.useState(null);
   const [publicRadars, setPublicRadars] = React.useState([]);
@@ -34,11 +22,8 @@ const PublicRadarPage = ({ history, match }) => {
       if (match.params.radarId) {
         for (let i = 0; i < res.length; i++) {
           if (res[i].id === match.params.radarId) return setCurrentRadar(res[i]);
-          else {
-            setError(`No radar with name ${match.params.radarId}`);
-          }
         }
-      }
+      } 
       setPublicRadars(res);
       console.log(res);
     } catch (err) {
@@ -90,7 +75,8 @@ const PublicRadarPage = ({ history, match }) => {
             render={(props) => (
               <PublicRadarContainer>
                 {Array.isArray(publicRadars) &&
-                  publicRadars.sort(dynamicSort('id')).map((radar) => {
+                  publicRadars.sort().map((radar) => {
+                    console.log(radar);
                     return (
                       <PublicRadarButton
                         key={radar.id}
@@ -119,12 +105,14 @@ const PublicRadarPage = ({ history, match }) => {
       <StyledNavBar>
         <NavIcon onClick={() => handleRoute('/')}>Tech Radar</NavIcon>
         <div>
-          {(currentRadar || error) && <button onClick={() => handleRoute('/')}>Back</button>}
-          <button onClick={() => handleRoute('/edit/')}>Capgemini employee? Login here</button>
+          {(currentRadar || error) && <RouteButton onClick={() => handleRoute('/')}>Back</RouteButton>}
+          <RouteButton onClick={() => handleRoute('/edit/')}>Log in</RouteButton>
         </div>
       </StyledNavBar>
 
+      <ContentWrapper>
       {renderPublicPage()}
+      </ContentWrapper>
     </PublicWrapper>
   );
 };
@@ -136,6 +124,20 @@ const ErrorWrapper = styled.div`
   color: ${(props) => props.theme.default.lightColor};
 `;
 
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  @media (max-width: 768px) {
+    #radarParent,
+    #radar {
+      margin-top: 20px;
+      width: 100vw;
+    }
+  }
+
+`
 const SpinnerContainer = styled.div`
   padding: 20vh 0;
 `;
@@ -154,10 +156,10 @@ const PublicRadarContainer = styled.div`
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr;
   grid-gap: 1em;
-  margin: 2em auto;
+  margin: 1em;
   padding-bottom: 2em;
-  width: 90%;
-  height: calc(100vh - 4em);
+  width: 98%;
+  height: calc(100vh - 5em);
   @media only screen and (max-width: 890px) {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
@@ -165,7 +167,6 @@ const PublicRadarContainer = styled.div`
 `;
 
 const PublicRadarButton = styled.button`
-  padding: 2em;
   font-size: 3vw;
   font-weight: 600;
   background: ${(props) => props.theme.default.primaryColor};

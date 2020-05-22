@@ -1,4 +1,4 @@
-// eslint-disable
+/* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
 export const getTech = `query GetTech($id: ID!) {
@@ -12,7 +12,6 @@ export const getTech = `query GetTech($id: ID!) {
     radar {
       id
       description
-      prevRadarUrl
       isPublic
       owner
       techList {
@@ -42,7 +41,6 @@ export const listTechs = `query ListTechs(
       radar {
         id
         description
-        prevRadarUrl
         isPublic
         owner
       }
@@ -59,7 +57,6 @@ export const getRadar = `query GetRadar($id: ID!) {
   getRadar(id: $id) {
     id
     description
-    prevRadarUrl
     isPublic
     owner
     techList {
@@ -89,7 +86,6 @@ export const listRadars = `query ListRadars(
     items {
       id
       description
-      prevRadarUrl
       isPublic
       owner
       techList {
