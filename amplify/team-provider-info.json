@@ -17,7 +17,8 @@
                 },
                 "techradar7713fa94PreSignup": {
                     "DOMAINWHITELIST": "capgemini.com, sogeti.com, idean.com"
-                }
+                },
+                "techradarREST": {}
             },
             "auth": {
                 "techradar7713fa94": {}
