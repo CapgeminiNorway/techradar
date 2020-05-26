@@ -17,7 +17,8 @@
                 },
                 "techradar7713fa94PreSignup": {
                     "DOMAINWHITELIST": "capgemini.com, sogeti.com, idean.com"
-                }
+                },
+                "techradarREST": {}
             },
             "auth": {
                 "techradar7713fa94": {}
@@ -33,7 +34,8 @@
             "DeploymentBucketName": "techradar-prod-20191011204142-deployment",
             "UnauthRoleName": "techradar-prod-20191011204142-unauthRole",
             "StackName": "techradar-prod-20191011204142",
-            "StackId": "arn:aws:cloudformation:eu-central-1:254435671471:stack/techradar-prod-20191011204142/c47c16c0-ec56-11e9-b5a1-066084ff6f3a"
+            "StackId": "arn:aws:cloudformation:eu-central-1:254435671471:stack/techradar-prod-20191011204142/c47c16c0-ec56-11e9-b5a1-066084ff6f3a",
+            "AmplifyAppId": "d2eivenpnm6inp"
         },
         "categories": {
             "auth": {
