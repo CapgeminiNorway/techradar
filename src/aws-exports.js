@@ -2,18 +2,18 @@
 
 const awsmobile = {
     "aws_project_region": "eu-central-1",
-    "aws_cognito_identity_pool_id": "eu-central-1:38c77df2-98ac-46dc-83a1-184e50520b66",
+    "aws_cognito_identity_pool_id": "eu-central-1:ac5c3d18-f906-4a8d-ac0a-c240ac4f1d0b",
     "aws_cognito_region": "eu-central-1",
-    "aws_user_pools_id": "eu-central-1_G1pYtAguv",
-    "aws_user_pools_web_client_id": "30tecuaiag1gg2tkgu4096ob70",
+    "aws_user_pools_id": "eu-central-1_YZTXW5x0o",
+    "aws_user_pools_web_client_id": "595j2u680q8j6eqi978klt086e",
     "oauth": {},
-    "aws_appsync_graphqlEndpoint": "https://t5akezm4gnayffwnevwbeki7da.appsync-api.eu-central-1.amazonaws.com/graphql",
+    "aws_appsync_graphqlEndpoint": "https://ttxp2jsuunh6fo7mcwsgedrvdm.appsync-api.eu-central-1.amazonaws.com/graphql",
     "aws_appsync_region": "eu-central-1",
     "aws_appsync_authenticationType": "AMAZON_COGNITO_USER_POOLS",
     "aws_cloud_logic_custom": [
         {
             "name": "techradarREST",
-            "endpoint": "https://xzf20i2k06.execute-api.eu-central-1.amazonaws.com/prod",
+            "endpoint": "https://lkon3337f9.execute-api.eu-central-1.amazonaws.com/dev",
             "region": "eu-central-1"
         }
     ]
