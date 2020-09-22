@@ -1,6 +1,11 @@
 
 # Capgemini Tech Radar
 
+>NB! This project is inactive. It was maintained by Jørgen Lybeck Hansen (jorgenlybeck94@gmail.com) which sadly does not >work at Capgemini anymore. The project also had to be taken down from AWS because of his Capgemini-AWS account being >closed. However, AWS Amplify which was used to build this project works with AWS CloudFormation files. This means that >all setup for this project still is available under /amplify/backend/*/*cloudformation-template.json files.
+>
+>You can install this locally and get the React GUI running pretty easily. Setting up the AWS resources can also easily >be done by reading the AWS Amplify documentation :rocket:
+
+
 This project was created with and [AWS Amplify](https://docs.amplify.aws)
 
 ## Installation
