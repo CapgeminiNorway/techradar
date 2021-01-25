@@ -1,37 +1,9 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const getTech = `query GetTech($id: ID!) {
-  getTech(id: $id) {
-    id
-    name
-    description
-    quadrant
-    ring
-    url
-    radar {
-      id
-      description
-      isPublic
-      owner
-      techList {
-        nextToken
-      }
-    }
-    radarId
-    confirmed
-    owner
-    moved
-  }
-}
-`;
-export const listTechs = `query ListTechs(
-  $filter: ModelTechFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listTechs(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
+export const getTech = /* GraphQL */ `
+  query GetTech($id: ID!) {
+    getTech(id: $id) {
       id
       name
       description
@@ -43,23 +15,24 @@ export const listTechs = `query ListTechs(
         description
         isPublic
         owner
+        techList {
+          nextToken
+        }
+        createdAt
+        updatedAt
       }
       radarId
       confirmed
       owner
       moved
+      createdAt
+      updatedAt
     }
-    nextToken
   }
-}
 `;
-export const getRadar = `query GetRadar($id: ID!) {
-  getRadar(id: $id) {
-    id
-    description
-    isPublic
-    owner
-    techList {
+export const listTechs = /* GraphQL */ `
+  query ListTechs($filter: ModelTechFilterInput, $limit: Int, $nextToken: String) {
+    listTechs(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
         name
@@ -67,32 +40,69 @@ export const getRadar = `query GetRadar($id: ID!) {
         quadrant
         ring
         url
+        radar {
+          id
+          description
+          isPublic
+          owner
+          createdAt
+          updatedAt
+        }
         radarId
         confirmed
         owner
         moved
+        createdAt
+        updatedAt
       }
       nextToken
     }
   }
-}
 `;
-export const listRadars = `query ListRadars(
-  $filter: ModelRadarFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listRadars(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
+export const getRadar = /* GraphQL */ `
+  query GetRadar($id: ID!) {
+    getRadar(id: $id) {
       id
       description
       isPublic
       owner
       techList {
+        items {
+          id
+          name
+          description
+          quadrant
+          ring
+          url
+          radarId
+          confirmed
+          owner
+          moved
+          createdAt
+          updatedAt
+        }
         nextToken
       }
+      createdAt
+      updatedAt
     }
-    nextToken
   }
-}
+`;
+export const listRadars = /* GraphQL */ `
+  query ListRadars($filter: ModelRadarFilterInput, $limit: Int, $nextToken: String) {
+    listRadars(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        description
+        isPublic
+        owner
+        techList {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
 `;

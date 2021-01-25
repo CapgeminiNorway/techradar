@@ -1,0 +1,68 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters": {
+        "authtechradar7713fa94UserPoolId": {
+            "Type": "String",
+            "Default": "authtechradar7713fa94UserPoolId"
+        },
+        
+        "authtechradar7713fa94AppClientID": {
+            "Type": "String",
+            "Default": "authtechradar7713fa94AppClientID"
+        },
+        "authtechradar7713fa94AppClientIDWeb": {
+            "Type": "String",
+            "Default": "authtechradar7713fa94AppClientIDWeb"
+        },
+        "AuthRoleArn": {
+            "Type": "String"
+        },
+        "UnauthRoleArn": {
+            "Type": "String"
+        },
+        "env": {
+            "Type": "String"
+        }
+    },
+    "Conditions": {
+        "ShouldNotCreateEnvResources": {
+            "Fn::Equals": [
+                {
+                    "Ref": "env"
+                },
+                "NONE"
+            ]
+        }
+    },
+    "Resources": {
+    
+        "adminGroup": {
+          "Type" : "AWS::Cognito::UserPoolGroup",
+          "Properties" : {
+              "GroupName" : "admin",
+              "Precedence" : 1,
+              
+              "UserPoolId" : {
+                "Ref": "authtechradar7713fa94UserPoolId"
+              } 
+            }
+        },
+        
+    
+        "userGroup": {
+          "Type" : "AWS::Cognito::UserPoolGroup",
+          "Properties" : {
+              "GroupName" : "user",
+              "Precedence" : 2,
+              
+              "UserPoolId" : {
+                "Ref": "authtechradar7713fa94UserPoolId"
+              } 
+            }
+        },
+        
+    
+    
+    },
+    
+}

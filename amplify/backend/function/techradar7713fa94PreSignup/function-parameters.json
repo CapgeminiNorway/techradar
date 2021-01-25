@@ -1,14 +1,16 @@
 {
-    "trigger": true,
-    "modules": [
-        "email-filter-whitelist"
-    ],
-    "parentResource": "techradar7713fa94",
-    "functionName": "techradar7713fa94PreSignup",
-    "parentStack": "auth",
-    "triggerEnvs": "[]",
-    "triggerTemplate": "PreSignup.json.ejs",
-    "roleName": "techradar7713fa94PreSignup",
-    "skipEdit": true,
-    "resourceName": "techradar7713fa94PreSignup"
+  "trigger": true,
+  "modules": [
+    "email-filter-whitelist"
+  ],
+  "parentResource": "techradar7713fa94",
+  "functionName": "techradar7713fa94PreSignup",
+  "parentStack": "auth",
+  "triggerEnvs": "[]",
+  "triggerTemplate": "PreSignup.json.ejs",
+  "roleName": "techradar7713fa94PreSignup",
+  "skipEdit": true,
+  "resourceName": "techradar7713fa94PreSignup",
+  "triggerDir": "/usr/local/lib/node_modules/@aws-amplify/cli/node_modules/amplify-category-auth/provider-utils/awscloudformation/triggers/PreSignup",
+  "triggerEventPath": "PreSignup.event.json"
 }

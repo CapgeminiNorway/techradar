@@ -1,55 +1,82 @@
 {
-    "dev": {
-        "awscloudformation": {
-            "AuthRoleName": "techradar-dev-20191009220654-authRole",
-            "UnauthRoleArn": "arn:aws:iam::254435671471:role/techradar-dev-20191009220654-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::254435671471:role/techradar-dev-20191009220654-authRole",
-            "Region": "eu-central-1",
-            "DeploymentBucketName": "techradar-dev-20191009220654-deployment",
-            "UnauthRoleName": "techradar-dev-20191009220654-unauthRole",
-            "StackName": "techradar-dev-20191009220654",
-            "StackId": "arn:aws:cloudformation:eu-central-1:254435671471:stack/techradar-dev-20191009220654/555b1340-ead0-11e9-a396-02998deedf64"
-        },
-        "categories": {
-            "function": {
-                "techradar7713fa94PostConfirmation": {
-                    "GROUP": "user"
-                },
-                "techradar7713fa94PreSignup": {
-                    "DOMAINWHITELIST": "capgemini.com, sogeti.com, idean.com"
-                },
-                "techradarREST": {}
-            },
-            "auth": {
-                "techradar7713fa94": {}
-            }
-        }
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "techradar-dev-20191009220654-authRole",
+      "UnauthRoleArn": "arn:aws:iam::254435671471:role/techradar-dev-20191009220654-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::254435671471:role/techradar-dev-20191009220654-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "techradar-dev-20191009220654-deployment",
+      "UnauthRoleName": "techradar-dev-20191009220654-unauthRole",
+      "StackName": "techradar-dev-20191009220654",
+      "StackId": "arn:aws:cloudformation:eu-central-1:254435671471:stack/techradar-dev-20191009220654/555b1340-ead0-11e9-a396-02998deedf64"
     },
-    "prod": {
-        "awscloudformation": {
-            "AuthRoleName": "techradar-prod-20191011204142-authRole",
-            "UnauthRoleArn": "arn:aws:iam::254435671471:role/techradar-prod-20191011204142-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::254435671471:role/techradar-prod-20191011204142-authRole",
-            "Region": "eu-central-1",
-            "DeploymentBucketName": "techradar-prod-20191011204142-deployment",
-            "UnauthRoleName": "techradar-prod-20191011204142-unauthRole",
-            "StackName": "techradar-prod-20191011204142",
-            "StackId": "arn:aws:cloudformation:eu-central-1:254435671471:stack/techradar-prod-20191011204142/c47c16c0-ec56-11e9-b5a1-066084ff6f3a",
-            "AmplifyAppId": "d2eivenpnm6inp"
+    "categories": {
+      "function": {
+        "techradar7713fa94PostConfirmation": {
+          "GROUP": "user"
         },
-        "categories": {
-            "auth": {
-                "techradar7713fa94": {}
-            },
-            "function": {
-                "techradar7713fa94PostConfirmation": {
-                    "GROUP": "user"
-                },
-                "techradar7713fa94PreSignup": {
-                    "DOMAINWHITELIST": "capgemini.com, sogeti.com, idean.com"
-                },
-                "techradarREST": {}
-            }
-        }
+        "techradar7713fa94PreSignup": {
+          "DOMAINWHITELIST": "capgemini.com, sogeti.com, idean.com"
+        },
+        "techradarREST": {}
+      },
+      "auth": {
+        "techradar7713fa94": {}
+      }
     }
+  },
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "techradar-prod-20191011204142-authRole",
+      "UnauthRoleArn": "arn:aws:iam::254435671471:role/techradar-prod-20191011204142-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::254435671471:role/techradar-prod-20191011204142-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "techradar-prod-20191011204142-deployment",
+      "UnauthRoleName": "techradar-prod-20191011204142-unauthRole",
+      "StackName": "techradar-prod-20191011204142",
+      "StackId": "arn:aws:cloudformation:eu-central-1:254435671471:stack/techradar-prod-20191011204142/c47c16c0-ec56-11e9-b5a1-066084ff6f3a",
+      "AmplifyAppId": "d2eivenpnm6inp"
+    },
+    "categories": {
+      "auth": {
+        "techradar7713fa94": {}
+      },
+      "function": {
+        "techradar7713fa94PostConfirmation": {
+          "GROUP": "user"
+        },
+        "techradar7713fa94PreSignup": {
+          "DOMAINWHITELIST": "capgemini.com, sogeti.com, idean.com"
+        },
+        "techradarREST": {}
+      }
+    }
+  },
+  "sampledev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-techradar-sampledev-184240-authRole",
+      "UnauthRoleArn": "arn:aws:iam::981284349548:role/amplify-techradar-sampledev-184240-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::981284349548:role/amplify-techradar-sampledev-184240-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "amplify-techradar-sampledev-184240-deployment",
+      "UnauthRoleName": "amplify-techradar-sampledev-184240-unauthRole",
+      "StackName": "amplify-techradar-sampledev-184240",
+      "StackId": "arn:aws:cloudformation:eu-central-1:981284349548:stack/amplify-techradar-sampledev-184240/10c1f1b0-5c10-11eb-9014-0661b67b4f2e",
+      "AmplifyAppId": "d2s035zs634iyf"
+    },
+    "categories": {
+      "auth": {
+        "techradar7713fa94": {}
+      },
+      "function": {
+        "techradar7713fa94PostConfirmation": {
+          "GROUP": "users"
+        },
+        "techradar7713fa94PreSignup": {
+          "DOMAINWHITELIST": "capgemini.com, idean.com, sogeti.com"
+        },
+        "techradarREST": {}
+      }
+    }
+  }
 }

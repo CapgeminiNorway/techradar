@@ -1,147 +1,177 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreateTech = `subscription OnCreateTech {
-  onCreateTech {
-    id
-    name
-    description
-    quadrant
-    ring
-    url
-    radar {
+export const onCreateTech = /* GraphQL */ `
+  subscription OnCreateTech {
+    onCreateTech {
+      id
+      name
+      description
+      quadrant
+      ring
+      url
+      radar {
+        id
+        description
+        isPublic
+        owner
+        techList {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      radarId
+      confirmed
+      owner
+      moved
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateTech = /* GraphQL */ `
+  subscription OnUpdateTech {
+    onUpdateTech {
+      id
+      name
+      description
+      quadrant
+      ring
+      url
+      radar {
+        id
+        description
+        isPublic
+        owner
+        techList {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      radarId
+      confirmed
+      owner
+      moved
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteTech = /* GraphQL */ `
+  subscription OnDeleteTech {
+    onDeleteTech {
+      id
+      name
+      description
+      quadrant
+      ring
+      url
+      radar {
+        id
+        description
+        isPublic
+        owner
+        techList {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      radarId
+      confirmed
+      owner
+      moved
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateRadar = /* GraphQL */ `
+  subscription OnCreateRadar {
+    onCreateRadar {
       id
       description
       isPublic
       owner
       techList {
+        items {
+          id
+          name
+          description
+          quadrant
+          ring
+          url
+          radarId
+          confirmed
+          owner
+          moved
+          createdAt
+          updatedAt
+        }
         nextToken
       }
+      createdAt
+      updatedAt
     }
-    radarId
-    confirmed
-    owner
-    moved
   }
-}
 `;
-export const onUpdateTech = `subscription OnUpdateTech {
-  onUpdateTech {
-    id
-    name
-    description
-    quadrant
-    ring
-    url
-    radar {
+export const onUpdateRadar = /* GraphQL */ `
+  subscription OnUpdateRadar {
+    onUpdateRadar {
       id
       description
       isPublic
       owner
       techList {
+        items {
+          id
+          name
+          description
+          quadrant
+          ring
+          url
+          radarId
+          confirmed
+          owner
+          moved
+          createdAt
+          updatedAt
+        }
         nextToken
       }
+      createdAt
+      updatedAt
     }
-    radarId
-    confirmed
-    owner
-    moved
   }
-}
 `;
-export const onDeleteTech = `subscription OnDeleteTech {
-  onDeleteTech {
-    id
-    name
-    description
-    quadrant
-    ring
-    url
-    radar {
+export const onDeleteRadar = /* GraphQL */ `
+  subscription OnDeleteRadar {
+    onDeleteRadar {
       id
       description
       isPublic
       owner
       techList {
+        items {
+          id
+          name
+          description
+          quadrant
+          ring
+          url
+          radarId
+          confirmed
+          owner
+          moved
+          createdAt
+          updatedAt
+        }
         nextToken
       }
-    }
-    radarId
-    confirmed
-    owner
-    moved
-  }
-}
-`;
-export const onCreateRadar = `subscription OnCreateRadar {
-  onCreateRadar {
-    id
-    description
-    isPublic
-    owner
-    techList {
-      items {
-        id
-        name
-        description
-        quadrant
-        ring
-        url
-        radarId
-        confirmed
-        owner
-        moved
-      }
-      nextToken
+      createdAt
+      updatedAt
     }
   }
-}
-`;
-export const onUpdateRadar = `subscription OnUpdateRadar {
-  onUpdateRadar {
-    id
-    description
-    isPublic
-    owner
-    techList {
-      items {
-        id
-        name
-        description
-        quadrant
-        ring
-        url
-        radarId
-        confirmed
-        owner
-        moved
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const onDeleteRadar = `subscription OnDeleteRadar {
-  onDeleteRadar {
-    id
-    description
-    isPublic
-    owner
-    techList {
-      items {
-        id
-        name
-        description
-        quadrant
-        ring
-        url
-        radarId
-        confirmed
-        owner
-        moved
-      }
-      nextToken
-    }
-  }
-}
 `;

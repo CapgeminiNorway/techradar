@@ -1,11 +1,11 @@
 {
-    "AppSyncApiName": "techradar",
-    "DynamoDBBillingMode": "PAY_PER_REQUEST",
-    "DynamoDBEnableServerSideEncryption": "false",
-    "AuthCognitoUserPoolId": {
-        "Fn::GetAtt": [
-            "authtechradar7713fa94",
-            "Outputs.UserPoolId"
-        ]
-    }
+  "AppSyncApiName": "techradar",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": "false",
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authtechradar7713fa94",
+      "Outputs.UserPoolId"
+    ]
+  }
 }

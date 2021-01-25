@@ -1,20 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useDebounce } from 'use-debounce';
-import { stylesTheme } from '../index';
-import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentTech, toggleRadar, deleteRadar, silentlyConfirmTech } from '../redux/actions/radar.action';
-import Icon, { ICON_TYPES } from '../assets/icons/IconComponent';
-import { motion } from "framer-motion"
-import SortBar from './SortBar';
-import { useWindowSize } from '../custom-hooks';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { useDebounce } from "use-debounce";
+import { stylesTheme } from "../index";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCurrentTech,
+  toggleRadar,
+  deleteRadar,
+  silentlyConfirmTech
+} from "../redux/actions/radar.action";
+import Icon, { ICON_TYPES } from "../assets/icons/IconComponent";
+import { motion } from "framer-motion";
+import SortBar from "./SortBar";
+import { useWindowSize } from "../custom-hooks";
 import { ReactComponent as ChevronUpSvg } from "../assets/chevron-up.svg";
-import { getUnconfirmedTech, getConfirmedTech } from '../redux/selectors/radar.selector';
+import { getUnconfirmedTech, getConfirmedTech } from "../redux/selectors/radar.selector";
 
 function TechList({ handleClick, multiList }) {
   const dispatch = useDispatch();
-  const { currentRadarList, allRadars } = useSelector((state) => state.radar);
-  const currentUser = useSelector((state) => state.user.currentUser);
+  const { currentRadarList, allRadars } = useSelector(state => state.radar);
+  const currentUser = useSelector(state => state.user.currentUser);
   const isAdmin = currentUser && currentUser.isAdmin;
   const [debounceTech, setDebounceTech] = useState(null);
   const [tech] = useDebounce(debounceTech, 100);
@@ -22,14 +27,13 @@ function TechList({ handleClick, multiList }) {
   const unconfirmedTech = useSelector(state => getUnconfirmedTech(state));
   const confirmedTech = useSelector(state => getConfirmedTech(state));
 
-
   const techListAnim = {
     hidden: {
       x: windowSize.isMobile ? 0 : 0,
       y: windowSize.isMobile ? "100%" : 0,
       transition: {
-        when: "afterChildren",
-      },
+        when: "afterChildren"
+      }
     },
     visible: {
       x: 0,
@@ -39,9 +43,9 @@ function TechList({ handleClick, multiList }) {
         duration: 1,
         ease: "easeOut",
         delay: 1
-      },
-    },
-  }
+      }
+    }
+  };
 
   const dispatchConfirmAll = () => dispatch(silentlyConfirmTech(unconfirmedTech));
 
@@ -53,7 +57,7 @@ function TechList({ handleClick, multiList }) {
     return currentRadarList.indexOf(radar) !== -1;
   };
 
-  const renderRadarList = (_radarList) => {
+  const renderRadarList = _radarList => {
     if (!_radarList || !_radarList.length) {
       return <TechListItem>No radars added</TechListItem>;
     }
@@ -67,16 +71,18 @@ function TechList({ handleClick, multiList }) {
           backgroundColor={stylesTheme.default.opaqueWhite}
           tabIndex={0}
           current={getIsCurrentRadar(radar, i)}
-          onClick={() => dispatch(toggleRadar(radar))}>
+          onClick={() => dispatch(toggleRadar(radar))}
+        >
           {radar.isPublic && (
-            <span role="img" aria-label={'star'}>
+            <span role="img" aria-label={"star"}>
               🌟
             </span>
           )}
-          {radar.id.replace(/-/g, ' ')}
-          {((radar.isPublic && currentUser.email.includes("lybeck")) || (isAdmin && !radar.isPublic)) && (
+          {radar.id.replace(/-/g, " ")}
+          {((radar.isPublic && currentUser.email.includes("martinsen")) ||
+            (isAdmin && !radar.isPublic)) && (
             <DeleteButton title="delete radar" onClick={() => dispatch(deleteRadar(radar))}>
-              <Icon type={ICON_TYPES.CLOSE} stroke={'#fff'} marginRight />
+              <Icon type={ICON_TYPES.CLOSE} stroke={"#fff"} marginRight />
             </DeleteButton>
           )}
         </TechListItem>
@@ -89,23 +95,28 @@ function TechList({ handleClick, multiList }) {
   const [hideConfimed, toggleHideConfirmed] = React.useState(false);
   const [hideUnconfirmed, toggleHideUnconfirmed] = React.useState(false);
   return (
-    <StyledTechList fullSize={fullSize} tabIndex={0} initial="hidden"
-      animate="visible" variants={techListAnim}
+    <StyledTechList
+      fullSize={fullSize}
+      tabIndex={0}
+      initial="hidden"
+      animate="visible"
+      variants={techListAnim}
     >
-      {windowSize.width < 768 &&
+      {windowSize.width < 768 && (
         <ToggleHeight fullSize={fullSize} onClick={() => toggleFullsize(!fullSize)}>
           <ChevronUpSvg />
-        </ToggleHeight>}
+        </ToggleHeight>
+      )}
 
       <h5 onClick={() => toggleHideRadars(!hideRadars)}>All radars:</h5>
-      {!hideRadars && <TechListWrapper>
-        {renderRadarList(allRadars)}
-      </TechListWrapper>}
+      {!hideRadars && <TechListWrapper>{renderRadarList(allRadars)}</TechListWrapper>}
 
-      <h5 onClick={() => toggleHideConfirmed(!hideConfimed)}>Confirmed Tech ({confirmedTech.length}):</h5>
-      { !hideConfimed && <TechListWrapper>
-        {
-          !!confirmedTech.length ?
+      <h5 onClick={() => toggleHideConfirmed(!hideConfimed)}>
+        Confirmed Tech ({confirmedTech.length}):
+      </h5>
+      {!hideConfimed && (
+        <TechListWrapper>
+          {!!confirmedTech.length ? (
             <>
               <SortBar
                 list={confirmedTech}
@@ -114,19 +125,19 @@ function TechList({ handleClick, multiList }) {
                 setDebounceTech={setDebounceTech}
               />
             </>
-            :
+          ) : (
             <TechListItem>No technology in selected radars</TechListItem>
-        }
+          )}
+        </TechListWrapper>
+      )}
 
-      </TechListWrapper>
-      }
+      <h5 onClick={() => toggleHideUnconfirmed(!hideUnconfirmed)}>
+        Unconfirmed Tech ({unconfirmedTech.length}):
+      </h5>
 
-
-      <h5 onClick={() => toggleHideUnconfirmed(!hideUnconfirmed)}>Unconfirmed Tech ({unconfirmedTech.length}):</h5>
-
-      { !hideUnconfirmed && <TechListWrapper>
-        {
-          !!unconfirmedTech.length ?
+      {!hideUnconfirmed && (
+        <TechListWrapper>
+          {!!unconfirmedTech.length ? (
             <>
               <SortBar
                 list={unconfirmedTech}
@@ -134,29 +145,28 @@ function TechList({ handleClick, multiList }) {
                 handleClick={handleClick}
                 setDebounceTech={setDebounceTech}
               />
-              {!!(currentUser && currentUser.isAdmin) &&
+              {!!(currentUser && currentUser.isAdmin) && (
                 <ConfirmAllWrapper>
                   <button onClick={dispatchConfirmAll}>Confirm all technology</button>
                 </ConfirmAllWrapper>
-              }
+              )}
             </>
-            :
+          ) : (
             <TechListItem>No technology in selected radars</TechListItem>
-        }
-      </TechListWrapper>
-      }
+          )}
+        </TechListWrapper>
+      )}
     </StyledTechList>
   );
 }
 
 export default TechList;
 
-
 const StyledTechList = styled(motion.ol)`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  background: ${(props) => props.theme.default.primaryColor};
+  background: ${props => props.theme.default.primaryColor};
   min-width: 20em;
   max-width: 20em;
   overflow-y: auto;
@@ -166,26 +176,29 @@ const StyledTechList = styled(motion.ol)`
   outline: none;
 
   h5 {
-    margin: .5em;
+    margin: 0.5em;
     cursor: pointer;
   }
 
   @media (min-width: 768px) {
     z-index: 100;
   }
-    
+
   @media (max-width: 768px) {
     min-width: 100vw;
     max-width: 100vw;
-    padding: 1em .5em;
+    padding: 1em 0.5em;
     padding-bottom: 5em;
     transition: min-height 500ms ease-out, max-height 500ms ease-out;
 
-    ${ props => props.fullSize ? `
+    ${props =>
+      props.fullSize
+        ? `
     
     min-height: 100vh;
     max-height: 100vh;
-    ` : `
+    `
+        : `
     
     min-height: 45vh;
     max-height: 45vh;
@@ -204,7 +217,9 @@ const ToggleHeight = styled.div`
   align-items: center;
 
   svg {
-    ${props => props.fullSize && `
+    ${props =>
+      props.fullSize &&
+      `
       transform: rotate(180deg);
     `};
     width: 10px;
@@ -212,22 +227,21 @@ const ToggleHeight = styled.div`
   }
 `;
 const ConfirmAllWrapper = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;
-padding: 10px;
-margin: 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  margin: 10px 0;
 
-button {
-  background: none;
-  color: white;
-  font-weight: 600;
-  text-decoration: underline;
-  :hover {
-    background: white;
+  button {
+    background: none;
+    color: white;
+    font-weight: 600;
+    text-decoration: underline;
+    :hover {
+      background: white;
+    }
   }
-}
-
 `;
 const TechListWrapper = styled.div`
   margin-bottom: 1em;
@@ -248,16 +262,16 @@ const DeleteButton = styled.span`
 
 export const TechListItem = styled.li`
   position: relative;
-  padding: .5em 2em .5em .5em;
+  padding: 0.5em 2em 0.5em 0.5em;
   text-align: left;
-  background: ${(props) => props.backgroundColor};
-  color: ${(props) => props.color};
+  background: ${props => props.backgroundColor};
+  color: ${props => props.color};
   list-style: none;
   cursor: pointer;
 
-  ${(props) =>
+  ${props =>
     props.current && {
       background: props.theme.default.lightColor,
-      color: props.theme.default.primaryColor,
+      color: props.theme.default.primaryColor
     }}
 `;
