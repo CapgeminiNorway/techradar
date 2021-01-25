@@ -1,37 +1,37 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { QUADRANTS } from '../App';
-import { getQuadrant, dynamicSortMultiple } from '../function.helper';
-import { stylesTheme } from '../index';
-import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentTech } from '../redux/actions/radar.action';
-import { setModal } from '../redux/actions/gui.action';
-import { MODAL_TYPES } from './commons/Modal';
-import {  TechListItem } from './TechList';
-import { Grow } from './commons/styles';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { QUADRANTS } from "../App";
+import { getQuadrant, dynamicSortMultiple } from "../function.helper";
+import { stylesTheme } from "../index";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentTech } from "../redux/actions/radar.action";
+import { setModal } from "../redux/actions/gui.action";
+import { MODAL_TYPES } from "./commons/Modal";
+import { TechListItem } from "./TechList";
+import { Grow } from "./commons/styles";
 
 const SortBar = ({ list, handleClick, multiList }) => {
   const dispatch = useDispatch();
-  const { currentTech, currentRadarList } = useSelector((state) => state.radar);
+  const { currentTech, currentRadarList } = useSelector(state => state.radar);
 
-  const [ searchString, setSearchString ] = React.useState("");
- 
-  const QUADRANT = 'quadrant',
-    RING = 'ring',
-    NAME = 'name';
+  const [searchString, setSearchString] = React.useState("");
+
+  const QUADRANT = "quadrant",
+    RING = "ring",
+    NAME = "name";
 
   const [currentFilters, setCurrentFilters] = useState([QUADRANT, RING, NAME]);
 
-  const handleSelectTech = (_tech) => {
+  const handleSelectTech = _tech => {
     if (handleClick) {
       handleClick(_tech);
     } else {
-      dispatch(setCurrentTech(_tech))
+      dispatch(setCurrentTech(_tech));
       dispatch(setModal(MODAL_TYPES.TECH_FORM));
     }
   };
 
-  const getIsCurrent = (tech) => {
+  const getIsCurrent = tech => {
     if (multiList) {
       return multiList.indexOf(tech) !== -1;
     } else {
@@ -39,7 +39,7 @@ const SortBar = ({ list, handleClick, multiList }) => {
     }
   };
 
-  const renderTechList = (_techList) => {
+  const renderTechList = _techList => {
     return _techList.map((tech, i) => {
       if (!tech) return null;
       return (
@@ -50,19 +50,18 @@ const SortBar = ({ list, handleClick, multiList }) => {
           backgroundColor={QUADRANTS[getQuadrant(tech.quadrant)].color}
           tabIndex={0}
           current={getIsCurrent(tech, i)}
-          onClick={() => handleSelectTech(tech)}>
+          onClick={() => handleSelectTech(tech)}
+        >
           <b>{tech.name}</b>
-          { currentRadarList.length > 1 && 
-          <p>{tech.radarId}</p>
-          }
-          
-           <RingLabel>{tech.ring}</RingLabel>
+          {currentRadarList.length > 1 && <p>{tech.radarId}</p>}
+
+          <RingLabel>{tech.ring}</RingLabel>
         </TechListItem>
       );
     });
   };
 
-  const setFilter = (filter) => {
+  const setFilter = filter => {
     const i = currentFilters.indexOf(filter);
     if (i > 0) {
       currentFilters.splice(i, 1);
@@ -71,16 +70,16 @@ const SortBar = ({ list, handleClick, multiList }) => {
     }
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = e => {
     setSearchString(e.target.value);
-  }
+  };
 
-  const returnSearch = (_techList) => {
+  const returnSearch = _techList => {
     if (!searchString.length) return _techList;
     return _techList.filter(t => t.name.includes(searchString));
   };
 
-  const returnSort = (_techList) => {
+  const returnSort = _techList => {
     return _techList.sort(dynamicSortMultiple(currentFilters[0], currentFilters[1]));
   };
 
@@ -97,7 +96,7 @@ const SortBar = ({ list, handleClick, multiList }) => {
       <StyledFilterBar>
         <label>Search:</label>
         <Grow>
-        <SortInput placeholder="technology search ..." onChange={handleSearch} />
+          <SortInput placeholder="technology search ..." onChange={handleSearch} />
         </Grow>
       </StyledFilterBar>
       {renderTechList(returnSearch(returnSort(list)))}
@@ -109,16 +108,17 @@ export default React.memo(SortBar);
 
 const FilterButton = ({ setFilter, buttonString, current }) => {
   const StyledFilterButton = styled.button`
-    background: ${(props) =>
+    background: ${props =>
       props.current ? props.theme.default.lightColor : props.theme.default.opaqueWhite};
-    color: ${(props) =>
+    color: ${props =>
       props.current ? props.theme.default.fontColor : props.theme.default.lightColor};
   `;
   return (
     <StyledFilterButton
       key={buttonString}
       onClick={() => setFilter(buttonString)}
-      current={current}>
+      current={current}
+    >
       {buttonString}
     </StyledFilterButton>
   );
@@ -132,15 +132,15 @@ const SortInput = styled.input`
   color: white;
   padding: 4px 6px;
   margin: 10px;
-  
+
   ::placeholder {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
   }
 `;
 
 const RingLabel = styled.label`
-  background: ${(props) => props.theme.default.lightColor};
-  color: ${(props) => props.theme.default.fontColor};
+  background: ${props => props.theme.default.lightColor};
+  color: ${props => props.theme.default.fontColor};
   border-radius: 3px;
   margin: 0 5px;
   width: 50px;
@@ -155,11 +155,10 @@ const StyledFilterBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: .3em 0;
+  margin: 0.3em 0;
   label {
     font-size: 14px;
-    padding:  0 0.5em ;
-
+    padding: 0 0.5em;
   }
   button {
     padding: 0.5em;
@@ -169,5 +168,4 @@ const StyledFilterBar = styled.div`
       padding: 0.5em;
     }
   }
-
 `;

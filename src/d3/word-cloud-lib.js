@@ -1,7 +1,7 @@
 // Word cloud layout by Jason Davies, https://www.jasondavies.com/wordcloud/
 // Algorithm due to Jonathan Feinberg, http://static.mrfeinberg.com/bv_ch03.pdf
 
-let dispatch = require('d3-dispatch').dispatch;
+let dispatch = require("d3-dispatch").dispatch;
 
 let cloudRadians = Math.PI / 180,
   cw = (1 << 11) >> 5,
@@ -19,7 +19,7 @@ module.exports = function() {
     spiral = archimedeanSpiral,
     words = [],
     timeInterval = Infinity,
-    event = dispatch('word', 'end'),
+    event = dispatch("word", "end"),
     timer = null,
     random = Math.random,
     cloud = {},
@@ -66,7 +66,7 @@ module.exports = function() {
         cloudSprite(contextAndRatio, d, data, i);
         if (d.hasText && place(board, d, bounds)) {
           tags.push(d);
-          event.call('word', cloud, d);
+          event.call("word", cloud, d);
           if (bounds) cloudBounds(bounds, d);
           else bounds = [{ x: d.x + d.x0, y: d.y + d.y0 }, { x: d.x + d.x1, y: d.y + d.y1 }];
           // Temporary hack
@@ -76,7 +76,7 @@ module.exports = function() {
       }
       if (i >= n) {
         cloud.stop();
-        event.call('end', cloud, tags, bounds);
+        event.call("end", cloud, tags, bounds);
       }
     }
   };
@@ -91,13 +91,13 @@ module.exports = function() {
 
   function getContext(canvas) {
     canvas.width = canvas.height = 1;
-    let ratio = Math.sqrt(canvas.getContext('2d').getImageData(0, 0, 1, 1).data.length >> 2);
+    let ratio = Math.sqrt(canvas.getContext("2d").getImageData(0, 0, 1, 1).data.length >> 2);
     canvas.width = (cw << 5) / ratio;
     canvas.height = ch / ratio;
 
-    let context = canvas.getContext('2d');
-    context.fillStyle = context.strokeStyle = 'red';
-    context.textAlign = 'center';
+    let context = canvas.getContext("2d");
+    context.fillStyle = context.strokeStyle = "red";
+    context.textAlign = "center";
 
     return { context: context, ratio: ratio };
   }
@@ -217,11 +217,11 @@ function cloudText(d) {
 }
 
 function cloudFont() {
-  return 'serif';
+  return "serif";
 }
 
 function cloudFontNormal() {
-  return 'normal';
+  return "normal";
 }
 
 function cloudFontSize(d) {
@@ -252,8 +252,8 @@ function cloudSprite(contextAndRatio, d, data, di) {
   while (++di < n) {
     d = data[di];
     c.save();
-    c.font = d.style + ' ' + d.weight + ' ' + ~~((d.size + 1) / ratio) + 'px ' + d.font;
-    let w = c.measureText(d.text + 'm').width * ratio,
+    c.font = d.style + " " + d.weight + " " + ~~((d.size + 1) / ratio) + "px " + d.font;
+    let w = c.measureText(d.text + "m").width * ratio,
       h = d.size << 1;
     if (d.rotate) {
       let sr = Math.sin(d.rotate * cloudRadians),
@@ -401,11 +401,11 @@ function zeroArray(n) {
 }
 
 function cloudCanvas() {
-  return document.createElement('canvas');
+  return document.createElement("canvas");
 }
 
 function functor(d) {
-  return typeof d === 'function'
+  return typeof d === "function"
     ? d
     : function() {
         return d;
@@ -414,5 +414,5 @@ function functor(d) {
 
 let spirals = {
   archimedean: archimedeanSpiral,
-  rectangular: rectangularSpiral,
+  rectangular: rectangularSpiral
 };

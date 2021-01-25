@@ -1,51 +1,47 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import { makeAdmin } from '../redux/actions/user.action';
-import { WhiteButton } from './pages/GenerateWordCloud';
+import React from "react";
+import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { makeAdmin } from "../redux/actions/user.action";
+import { WhiteButton } from "./pages/GenerateWordCloud";
 
 const UserManagement = () => {
-  const { allUsers } = useSelector((state) => state.user);
+  const { allUsers } = useSelector(state => state.user);
   const dispatch = useDispatch();
 
-  const dispatchMakeAdmin = (user) => {
+  const dispatchMakeAdmin = user => {
     debugger;
-    dispatch(makeAdmin(user))
-  }
+    dispatch(makeAdmin(user));
+  };
 
-  const [ admins, users ] = React.useMemo( () => {
-    let _admins = [], _users = [];
+  const [admins, users] = React.useMemo(() => {
+    let _admins = [],
+      _users = [];
 
-    allUsers.forEach ( user => {
+    allUsers.forEach(user => {
       if (user.role === "admin") _admins.push(user);
       else _users.push(user);
-    })
-    return [_admins, _users]
-  }, [ allUsers ])
+    });
+    return [_admins, _users];
+  }, [allUsers]);
   return (
     <Wrapper>
       <h1>Administrators ({admins.length})</h1>
       {admins.map(user => {
-
-          return (
-            <UserItem key={user.email}>
-              {user.email}
-            </UserItem>
-          )
+        return <UserItem key={user.email}>{user.email}</UserItem>;
       })}
 
       <h1>Users ({users.length})</h1>
 
       {users.map(user => {
-          return (
-            <UserItem key={user.email}>
-              {user.email}
-              <WhiteButton onClick={() => dispatchMakeAdmin(user)}>Make admin</WhiteButton>
-            </UserItem>
-          )
+        return (
+          <UserItem key={user.email}>
+            {user.email}
+            <WhiteButton onClick={() => dispatchMakeAdmin(user)}>Make admin</WhiteButton>
+          </UserItem>
+        );
       })}
     </Wrapper>
-  )
+  );
 };
 
 export default React.memo(UserManagement);
@@ -59,7 +55,6 @@ const UserItem = styled.div`
   button {
     padding: 2px 4px;
   }
-
 `;
 const Wrapper = styled.div`
   display: flex;
@@ -72,4 +67,3 @@ const Wrapper = styled.div`
     margin: 20px 0;
   }
 `;
-

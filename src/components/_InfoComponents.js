@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 export const GeneralRadarExplanation = () => {
   return (
@@ -9,12 +9,12 @@ export const GeneralRadarExplanation = () => {
         The Tech Radar is used by the company to discover technology in each department. It maps out
         which technology is hot, and which is not. The inner rings contains technology which should
         be adapted, while the outer rings represents technology one should stay away from. The radar
-        your team creates is maintained by the departments, communities and the company. 
-        <br/>
-        <br/>
-        It should be updated to reflect the current status of the technology you work with. If
-        it's maintained, then the credibility of the radar is held up and others can trust
-        that the adapt technology is truly adaptable, and the 'hold' technology is truly outdated.
+        your team creates is maintained by the departments, communities and the company.
+        <br />
+        <br />
+        It should be updated to reflect the current status of the technology you work with. If it's
+        maintained, then the credibility of the radar is held up and others can trust that the adapt
+        technology is truly adaptable, and the 'hold' technology is truly outdated.
       </p>
     </StyledGeneralExplanation>
   );
@@ -23,7 +23,7 @@ export const RadarExplanationInformation = () => {
   return (
     <StyledRadarInformationWrapper>
       <h3>
-        <span role="img" aria-label={'robot'}>
+        <span role="img" aria-label={"robot"}>
           ❓
         </span>
         Quadrants
@@ -50,7 +50,7 @@ export const RadarExplanationInformation = () => {
         </p>
       </div>
       <h3>
-        <span role="img" aria-label={'robot'}>
+        <span role="img" aria-label={"robot"}>
           ❓
         </span>
         Rings
@@ -87,9 +87,8 @@ export const RadarExplanationInformation = () => {
 export function IntroductionInformation() {
   return (
     <WelcomeScreen>
-
       <h3>
-        <span role="img" aria-label={'robot'}>
+        <span role="img" aria-label={"robot"}>
           ⭐
         </span>
         About
@@ -101,28 +100,26 @@ export function IntroductionInformation() {
         radars.
       </p>
       <h3>
-        <span role="img" aria-label={'note'}>
+        <span role="img" aria-label={"note"}>
           📝
         </span>
         Adding technology
       </h3>
       <ul>
+        <li>Click "Add Tech".</li>
+        <li>Fill inn all data and make sure you understand what the different categories mean.</li>
         <li>
-          Click "Add Tech".
+          Select the radar you want to add the Tech to. Only selected radars appear in the dropdown.
+          On desktop, you can select a radar while adding new tech.
         </li>
+        <li>Submitting a new technology requires an admin to approve it.</li>
         <li>
-          Fill inn all data and make sure you understand what the different categories mean.
+          The technology is displayed in the "Unconfirmed Tech" list. If an admin adds Tech, or
+          approves Unconfirmed Tech, it is added to both the radar and the "Confirmed Tech" list.
         </li>
-        <li>
-            Select the radar you want to add the Tech to. Only selected radars appear in the dropdown. On desktop, you can select a radar while adding new tech.
-        </li>
-        <li>
-          Submitting a new technology requires an admin to approve it. 
-        </li>
-        <li>The technology is displayed in the "Unconfirmed Tech" list. If an admin adds Tech, or approves Unconfirmed Tech, it is added to both the radar and the "Confirmed Tech" list.</li>
       </ul>
       <h3>
-        <span role="img" aria-label={'note'}>
+        <span role="img" aria-label={"note"}>
           📝
         </span>
         Update Tech
@@ -131,29 +128,36 @@ export function IntroductionInformation() {
         <li>
           Click on Tech from the list of Confirmed/Unconfirmed Tech, or directly from the Radar
         </li>
-        <li>
-          Update what you want.
-        </li>
-        <li>
-            When a user updates, the Tech is placed in "Unconfirmed Tech".</li>
-        <li>
-          If an Admin updates a Tech, it is approved and directly added to the radar
-        </li>
+        <li>Update what you want.</li>
+        <li>When a user updates, the Tech is placed in "Unconfirmed Tech".</li>
+        <li>If an Admin updates a Tech, it is approved and directly added to the radar</li>
       </ul>
       <h3>
-        <span role="img" aria-label={'robot'}>
+        <span role="img" aria-label={"robot"}>
           🤖
         </span>
-        Administrators 
+        Administrators
       </h3>
       <ul>
         <p>Admins receives some options other users does not. "Add radar" and "User management".</p>
-        
-        <li><b>Add radar</b> lets the admin create a radar. There are two checkboxes here, letting the admin make a public radar displayed in the https://cop-tech-radar.com for the whole world. The admin can also create a radar based on multiple other radars. By highlighting other radars and checking off "Create Radar with Technology from selected radars" the admin will create a new radar merging all other technology in selected radars. The other radars are not deleted.</li>
-        <li><b>Delete radar</b> is displayed as a red cross in the list of radars. This is only for administrators.</li>
-        <li><b>User management</b> contains a list over all users, and gives the admin the chance to make other users admins.</li>
+
+        <li>
+          <b>Add radar</b> lets the admin create a radar. There are two checkboxes here, letting the
+          admin make a public radar displayed in the https://cop-tech-radar.com for the whole world.
+          The admin can also create a radar based on multiple other radars. By highlighting other
+          radars and checking off "Create Radar with Technology from selected radars" the admin will
+          create a new radar merging all other technology in selected radars. The other radars are
+          not deleted.
+        </li>
+        <li>
+          <b>Delete radar</b> is displayed as a red cross in the list of radars. This is only for
+          administrators.
+        </li>
+        <li>
+          <b>User management</b> contains a list over all users, and gives the admin the chance to
+          make other users admins.
+        </li>
       </ul>
-     
     </WelcomeScreen>
   );
 }
